@@ -301,7 +301,7 @@ $config['cache_path'] = '';
 |	             of query parameters.
 |
 */
-$config['cache_query_string'] = array('page', 'sort_by', 'genre', 'query_term');
+$config['cache_query_string'] = array('cat', 'page', 'sort_by', 'genre', 'query_term');
 
 /*
 |--------------------------------------------------------------------------
