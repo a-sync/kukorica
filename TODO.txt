@@ -1,0 +1,11 @@
+cache optimalizálás (ürítés ha frissült a db, ezzel együtt hosszabb (1-2ó? cachetime))
+
+évek, 0-val vannak ahol nincs adat, helyette NULL? (unset())
+
+értelmes kezelés 720p, 1080p, (megkell nézni bármit megjelenít-e mert ez esetben rls név alapján mehet)
+
+genre listet imdb / bithu alapján helyretenni
+
+magyar ékezetesejket hmtl char kódban küldeni!
+
+api altal lekert/kuldott adatok matchelese a PT-vel (movie model)
