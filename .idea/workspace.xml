@@ -2,69 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="73412185-0504-43db-97fe-753495b86600" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/.htaccess" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/cache/.htaccess" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/cache/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/api.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/autoload.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/config.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/constants.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/database.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/doctypes.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/foreign_chars.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/hooks.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/memcached.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/migration.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/mimes.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/profiler.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/routes.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/smileys.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/config/user_agents.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/controllers/Api.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/controllers/Cron.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/controllers/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/core/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/helpers/api_helper.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/helpers/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/hooks/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/language/english/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/language/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/libraries/Bithu.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/libraries/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/logs/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/logs/log-2016-01-23.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/models/Kukorica.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/models/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/README.markdown" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/data/Collection.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/data/Episode.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/data/Movie.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/data/Person.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/data/Role.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/data/Season.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/data/TVShow.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/data/roles/MovieRole.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/data/roles/TVShowRole.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/third_party/tmdb/tmdb-api.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/cli/error_404.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/cli/error_db.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/cli/error_exception.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/cli/error_general.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/cli/error_php.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/cli/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/html/error_404.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/html/error_db.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/html/error_exception.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/html/error_general.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/html/error_php.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/html/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/errors/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/views/json.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="kukorica.iws" />
     <ignored path=".idea/workspace.xml" />
