@@ -14,6 +14,8 @@ class Cron extends CI_Controller {
     private $call_limit = 30;
     private $time_interval = 10;
 
+    private $cron_output = array();
+
     public function __construct()
     {
         parent::__construct();
@@ -51,6 +53,8 @@ class Cron extends CI_Controller {
                     $this->tmdb_scrape();
             }
 
+            if(count($this->cron_output) > 0) $this->load->view('cron', array('output'=>$this->cron_output));
+
             flock($_lock, LOCK_UN);
         }
         else log_message('info', 'cron blocked by flock()');
@@ -59,7 +63,6 @@ class Cron extends CI_Controller {
     
     private function elozetesek()
     {
-        die('tentebaba');
         $this->load->model('kukorica');
         $this->load->helper('api_helper');
 
@@ -68,35 +71,86 @@ class Cron extends CI_Controller {
         if(count($movies) > 0)
         {
             log_message('debug', 'elozetesek start. movies.length = '.count($movies));
+            $this->o('elozetesek start. movies.length = '.count($movies)."\r\n");
+
             foreach($movies as $m) {
+                $imdb_id = 'tt' . str_pad($m['imdb_id'], 7, '0', STR_PAD_LEFT);
+
                 $u = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q='
                     . urlencode('"'.$m['title'].'" ')
                     . $m['year']
                     . urlencode(' magyar szinkronos előzetes ')
                     . 'site:youtube.com';
+                $this->o('call & decode: /'.$imdb_id.'/ '.$m['title'].' ('.$m['year'].')');
 
                 $resp = json_decode(scrape_url($u), TRUE);
+                log_message('debug', 'responseStatus '.$resp['responseStatus']);
+                $this->o('responseStatus '.$resp['responseStatus']);
 
-                if(count($resp['responseData']['results']) > 0)
+                if(intval($resp['responseStatus']) >= '400')
                 {
-                    $yt = $resp['responseData']['results'][0]['unescapedUrl'];
-                    $yt_trailer_code = get_yt_id($yt);
-
-                    if($yt_trailer_code != '')
-                    {
-                        $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code'=>$yt_trailer_code));
-                    }
-                    else log_message('debug', 'Nincs yt id: '.$u);
+                    log_message('debug', 'terminating... ');
+                    $this->o('terminating ');
+                    break;
                 }
-                //else TODO: locked 2
-                else log_message('debug', 'Nincs yt előzetes: '.$u);
 
-                sleep(rand(1,2));//iggy talan nem blokkol
+                $res_num = 0;
+                if( isset($resp['responseData'])
+                    && isset($resp['responseData']['results'])
+                    && is_array($resp['responseData']['results'])) {
+                    $res_num = count($resp['responseData']['results']);
+                }
+                $this->o('resp.num = '.$res_num);
+
+                if($res_num > 0)
+                {
+                    foreach($resp['responseData']['results'] as $search_result) {
+                        $ueUrl = $search_result['unescapedUrl'];
+                        $yt_trailer_code = get_yt_id($ueUrl);
+
+                        $this->o('url: '.$search_result['title'].' (code: '.$yt_trailer_code.')');
+
+                        if ($yt_trailer_code != '') {
+                            $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code));
+
+                            $this->o('IMDB_ID: '.$imdb_id.' updated... <br/>'
+                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/1.jpg" alt="" style="" > '
+                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/2.jpg" alt="" style="" > '
+                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/3.jpg" alt="" style="" > '
+                            .'<a href="'.$search_result['url'].'">'.$yt_trailer_code.'</a> <br style="clear:both;"/><br/>');
+                        }
+                        else
+                        {
+                            //else TODO: locked ? 3??
+                            log_message('debug', 'Nincs yt id találat ('.$imdb_id.'): ' . $u);
+                            $this->o('Nincs yt id találat ('.$imdb_id.'): '.$u.'<br/>');
+
+                            $this->kukorica->poke_movie($m['imdb_id']);
+                        }
+                    }
+                }
+                else
+                {//else TODO: locked 2
+                    log_message('debug', 'Nincs yt előzetes találat ('.$imdb_id.'): '.$u);
+                    $this->o('Nincs yt előzetes találat ('.$imdb_id.'): '.$u.'<br/>');
+                }
+
+                $r = rand(2,5);//igy talan nem blokkol egybol
+                $this->o('sleep: '.$r);
+                sleep($r);
+                $this->o('continue.'."\r\n");
             }
             log_message('debug', 'elozetesek finish.');
+
+            $this->o('elozetesek finish. ');
         }
     }
-    
+
+    private function o($str)
+    {
+        $this->cron_output[] = '['.str_pad(microtime(true), 15, '0', STR_PAD_RIGHT).'] '.$str;
+    }
+
     private function tmdb_scrape()
     {
         $this->load->model('kukorica');
@@ -105,8 +159,6 @@ class Cron extends CI_Controller {
 
             if (count($movie_ids) > 0) {
                 log_message('info', 'cron started for ' . count($movie_ids) . ' item @ ' . date('H:i:s'));
-
-
 
                 $tmdb = new TMDB($this->api_key, $this->language, false);
                 $ac = 0;

@@ -145,6 +145,8 @@ class Kukorica extends CI_Model {
         return $query->result_array();
     }
 
+
+
     public function update_movie($imdb_id, $data)
     {
         $imdb_id = intval(trim($imdb_id, 't'));
@@ -153,6 +155,8 @@ class Kukorica extends CI_Model {
                 ->where('imdb_id', $imdb_id)
                 ->update('movies', $data);
         }
+
+        return FALSE;
     }
 
     private function clean_fields($data, $valid_fields)
@@ -174,11 +178,24 @@ class Kukorica extends CI_Model {
             ->from('movies')
             ->where('year !=', 0)
             ->where('yt_trailer_code', '')
-            ->order_by('updated', 'DESC')
+            ->order_by('updated', 'ASC')
             ->limit($limit)
             ->get()
         ;
 
         return $query->result_array();
     }
+
+    public function poke_movie($imdb_id)
+    {
+        $imdb_id = intval(trim($imdb_id, 't'));
+        if($imdb_id) {
+            return $this->db
+                ->where('imdb_id', $imdb_id)
+                ->update('movies', array('updated'=>'NOW()'));
+        }
+
+        return FALSE;
+    }
+
 }

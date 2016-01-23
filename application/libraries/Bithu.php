@@ -217,8 +217,7 @@ class Bithu {
 
         $tmp2 = str_replace(array('ma', 'tegnap'), array(date('Y-m-d'), date('Y-m-d', strtotime('-1 day'))), $tmp1);
 
-        if ($tmp2 != $tmp1) $tmp2 = $tmp2;
-        elseif (strlen($tmp2) == 12) $tmp2 = date('Y-') . str_replace(array('. ', '.'), array(' ', '-'), $tmp2);
+        if ($tmp2 == $tmp1 && strlen($tmp2) == 12) $tmp2 = date('Y-') . str_replace(array('. ', '.'), array(' ', '-'), $tmp2);
 
         return strtotime($tmp2);
     }
@@ -267,7 +266,7 @@ class Bithu {
         }
 
         $params = array(
-            'cat' => ($this->CI->input->get('cat') == '19')?'19':'23',
+            'cat' => ($this->CI->input->get('cat') == 'Film/Eng/SD')?'19':'23',//23:Film/Hun/SD
             'page' => $this->pagenum - 1,
             'd' => 'DESC'//order_by=asc
         );

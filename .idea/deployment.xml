@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="localhost">
+  <component name="PublishConfigData" serverName="bigfathead.eu/kukorica/" exclude=".svn;.cvs;.idea;.DS_Store;.git;.hg;TODO.txt;">
     <serverData>
-      <paths name="localhost">
+      <paths name="bigfathead.eu/kukorica/">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/kukorica" />
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/kukorica" />
           </mappings>
         </serverdata>
       </paths>

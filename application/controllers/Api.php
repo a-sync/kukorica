@@ -24,9 +24,9 @@ class Api extends CI_Controller {
         && $this->uri->segment(3) == 'list_movies.json'
         && */$this->agent->agent_string() == ''
         && (
-                $this->input->get('cat') == '23'
-            ||  $this->input->get('cat') == '19'
-          )
+                $this->input->get('cat') == 'Film/Hun/SD'
+            ||  $this->input->get('cat') == 'Film/Eng/SD'
+          ))
         {
             $this->config->load('api');
             $this->load->helper('api_helper');

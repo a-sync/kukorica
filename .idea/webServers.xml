@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="5db4e46a-d760-456b-8038-d7030e8247c4" name="bigfathead.eu/kukorica/" url="http://bigathead.eu/">
+        <fileTransfer host="62.210.169.178" port="21" password="dfe0dfcbdfc9dfc1dfcfdfcedfeddfc6dfdfdfc7dfc6dfd3dfe2dfc3dfdcdfc3dfc4dfcddfeedfc3dfdadfdadfcfdfcedf9bdf9f" username="kukorica@bigfathead.eu" />
+      </webServer>
+    </option>
+  </component>
+</project>
