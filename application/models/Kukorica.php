@@ -186,7 +186,7 @@ class Kukorica extends CI_Model {
         return $query->result_array();
     }
 
-    public function poke_movie($imdb_id)
+    public function poke_movie($imdb_id) //TODO: Y U NO WORK?
     {
         $imdb_id = intval(trim($imdb_id, 't'));
         if($imdb_id) {

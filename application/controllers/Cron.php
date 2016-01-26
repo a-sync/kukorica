@@ -111,8 +111,6 @@ class Cron extends CI_Controller {
                         $this->o('url: '.$search_result['title'].' (code: '.$yt_trailer_code.')');
 
                         if ($yt_trailer_code != '') {
-                            $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code));
-
                             $this->o('IMDB_ID: '.$imdb_id.' updated... <br/>'
                             .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/1.jpg" alt="" style="" > '
                             .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/2.jpg" alt="" style="" > '
@@ -127,8 +125,10 @@ class Cron extends CI_Controller {
                             log_message('debug', 'Nincs yt id találat ('.$imdb_id.'): ' . $u);
                             $this->o('Nincs yt id találat ('.$imdb_id.'): '.$u.'<br/>');
 
-                            $this->kukorica->poke_movie($m['imdb_id']);
+                            //$this->kukorica->poke_movie($m['imdb_id']);
                         }
+
+                        $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code));//POKE
                     }
                 }
                 else
