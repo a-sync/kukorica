@@ -38,7 +38,7 @@ class Api extends CI_Controller {
     {
         //log_message('info', 'UA '.$this->agent->agent_string());
 
-        if(count($_REQUEST)>0) log_message('info', '('.$_SERVER['REMOTE_ADDR'].') '.$_SERVER['REQUEST_URI']);
+        if(count($_REQUEST)>0) log_message('debug', '('.$_SERVER['REMOTE_ADDR'].') '.$_SERVER['REQUEST_URI']);
         //var_dump(_DOMAIN, _URL, _UID, _PASS, _PASSKEY, _TORRENT);
         $MOVIES = array();
 
