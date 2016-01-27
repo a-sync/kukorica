@@ -125,10 +125,25 @@ class Api extends CI_Controller {
             if($imdb_ids[$i] != 0) {
                 if(isset( $op_log[ $imdb_ids[$i] ] ))
                 {
-                    $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][] = $torrent;
+                    # QUALITY 2 RLS HAX #
+                    $qualities = array('720p', '1080p', '480p', 'HDRip');
+                    $tnum = count($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents']);
+                    if(isset($qualities[$tnum])) {
+                        //TODO: setup quality by release name (BDRip,DVDRip,TVRip,HDTV,DVBRip,Web-DL)
+                        if($tnum == 1 && intval($torrent['size_bytes']) < intval($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][0]['size_bytes'])) {
+                            $torrent['quality'] = $qualities[0];
+                            $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][0]['quality'] = $qualities[1];
+                        }//TODO: elseif($tnum>1)*prio by seeders xor BT RLS switcher*
+                        else {
+                            $torrent['quality'] = $qualities[$tnum];
+                        }
+
+                        $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][] = $torrent;
+                    }
+                    # /QUALITY 2 RLS HAX #
                 }
                 else {
-                    $op_log[$imdb_ids[$i]] = $i;
+                    $op_log[ $imdb_ids[$i] ] = $i;
 
                     if (!isset($db_movies[$imdb_ids[$i]])) // ! movies
                     {

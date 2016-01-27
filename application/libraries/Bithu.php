@@ -164,7 +164,7 @@ class Bithu {
             $TORRENT = array(
                 'url' => str_replace(array('{PASSKEY}', '{ID}'), array(_PASSKEY, $id), _TORRENT),
                 'hash' => "",
-                'quality' => "HDRip",
+                'quality' => "720p",
                 'seeds' => $seeds,
                 'peers' => $peers,
                 'size' => $size,

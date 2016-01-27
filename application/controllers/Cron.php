@@ -184,7 +184,7 @@ class Cron extends CI_Controller {
                     }
                     elseif ($movie === TRUE) //nem található film ezzel az id-vel
                     {
-                        log_message('error', 'cron error: $movie === true');
+                        log_message('error', 'cron error: $movie === true @ '.$imdb_id);
                         $this->kukorica->update_movie($imdb_id, array('locked' => 1));
                     }
                     else {
