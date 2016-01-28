@@ -100,6 +100,15 @@ class Bithu {
             if ($i == 0) continue;
             $cols = $node->getElementsByTagName('td');
 
+            if($this->params['cat'] == '19')
+            {
+                //Film/Eng/SD esetén, ha több mint egy tucat fájl van, valószínűleg be van csomagolva
+                if(intval($cols->item(2)->textContent) > 12)
+                {
+                    continue;
+                }
+            }
+
             $id = 0;
             $title = '';
             $title_long = '';
@@ -266,7 +275,7 @@ class Bithu {
         }
 
         $params = array(
-            'cat' => ($this->CI->input->get('cat') == 'Film/Eng/SD')?'19':'23',//23:Film/Hun/SD
+            'cat' => ($this->CI->input->get('cat') == 'Film/Eng/SD')?'19':'23',//23:Film/Hun/SD; 19:Film/Eng/SD
             'page' => $this->pagenum - 1,
             'd' => 'DESC'//order_by=asc
         );
