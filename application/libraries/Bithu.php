@@ -102,7 +102,7 @@ class Bithu {
 
             if($this->params['cat'] == '19')
             {
-                //Film/Eng/SD esetén, ha több mint egy tucat fájl van, valószínűleg be van csomagolva
+                //Film/Eng/SD esetén, ha több mint egy tucat fájl van, valószínűleg be van csomagolva :(
                 if(intval($cols->item(2)->textContent) > 12)
                 {
                     continue;
