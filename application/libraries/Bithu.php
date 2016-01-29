@@ -170,6 +170,10 @@ class Bithu {
             $peers = explode(' / ', $cols->item(8)->textContent);
             $peers = intval($peers[1]);
 
+            if($size_bytes < 50000000) continue;
+            elseif($seeds == 0) continue;
+            //ha nincs .osszes, .pack, .collection, .boxset, .I-, .1-, *logy., és 15nél több fájl van akkor is skip
+
             $TORRENT = array(
                 'url' => str_replace(array('{PASSKEY}', '{ID}'), array(_PASSKEY, $id), _TORRENT),
                 'hash' => "",
