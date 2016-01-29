@@ -287,6 +287,7 @@ class Bithu {
             case 'download_count': # megtekintések
                 $params['sort'] = 'times_completed';
                 break;
+            case 'trending':
             case 'seeds': # seedek
                 $params['sort'] = 'seeders';
                 break;
