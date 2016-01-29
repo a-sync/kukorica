@@ -275,7 +275,7 @@ class Bithu {
         }
 
         $params = array(
-            'cat' => ($this->CI->input->get('cat') == 'Film/Eng/SD')?'19':'23',//23:Film/Hun/SD; 19:Film/Eng/SD
+            'cat' => (strpos($this->CI->input->get('cat'), 'Eng') !== false)?'19':'23',#19:Film/Eng/SD #23:Film/Hun/SD;
             'page' => $this->pagenum - 1,
             'd' => 'DESC'//order_by=asc
         );

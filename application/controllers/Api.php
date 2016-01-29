@@ -26,8 +26,8 @@ class Api extends CI_Controller {
         && (
                 $this->input->get('cat') == 'Film/Hun/SD'
             ||  $this->input->get('cat') == 'Film/Eng/SD'
-            ||  $this->input->get('cat') == 'bitHUmen'
-            ||  $this->input->get('cat') == 'Carpathians'
+            ||  $this->input->get('cat') == 'Hun'
+            ||  $this->input->get('cat') == 'Eng'
           ))
         {
             $this->config->load('api');
