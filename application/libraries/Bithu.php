@@ -6,7 +6,17 @@
  * Time: 15:13
  */
 
+define('_UID', '55830');
+define('_PASS', 'a628e51fe55b66e4932dad014dc71bbe');
+define('_LIMIT', 50);
+
+define('_DOMAIN', 'http://bithumen.be');
+define('_URL', _DOMAIN.'/browse.php?');
+define('_PASSKEY', '{PASSKEY}');
+define('_TORRENT', _DOMAIN.'/download/{PASSKEY}/{ID}.torrent');
+
 class Bithu {
+
     private $torrenttable;
     private $movies;
     private $torrent_ids;
@@ -14,6 +24,7 @@ class Bithu {
     private $params;
     private $pagenum;
     private $movie_count = 10000;//TODO
+    //limit?
 
     protected $CI;
 
@@ -56,6 +67,22 @@ class Bithu {
     public function getMovieCount()
     {
         return $this->movie_count;
+    }
+
+    public function getLimit()
+    {
+        return _LIMIT;
+    }
+
+    public function getScrapeURL()
+    {
+        $scrape_query = get_url_query($this->getParams());
+        return _URL.$scrape_query;
+    }
+
+    public function getScrapeCookies()
+    {
+        return 'uid='._UID.'; pass='._PASS;
     }
 
     public function parseHTML($str)

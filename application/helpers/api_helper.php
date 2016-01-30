@@ -46,7 +46,6 @@ if ( ! function_exists('slugify')) {
     }
 }
 
-
 if ( ! function_exists('get_url_query')) {
     function get_url_query($params = array())
     {

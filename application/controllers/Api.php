@@ -8,10 +8,13 @@
 
 class Api extends CI_Controller {
 
-    private $pagenum;
-    private $movie_count;
+    private $pagenum = 0;
+    private $movie_count = 0;
     private $limit = 50;
-    private $site_id = 1;
+    private $site_id = 0;
+    private $lib = 'kukica';
+
+    private $MOVIES = array();
 
     public function __construct()
     {
@@ -19,10 +22,7 @@ class Api extends CI_Controller {
 
         $this->load->library('user_agent');
 
-        if(/*$this->uri->segment(1) == 'api'
-        && $this->uri->segment(2) == 'v2'
-        && $this->uri->segment(3) == 'list_movies.json'
-        && */$this->agent->agent_string() == ''
+        if($this->agent->agent_string() == ''
         && (
                 $this->input->get('cat') == 'Film/Hun/SD'
             ||  $this->input->get('cat') == 'Film/Eng/SD'
@@ -38,23 +38,32 @@ class Api extends CI_Controller {
 
     public function index()
     {
-        //log_message('info', 'UA '.$this->agent->agent_string());
-
         if(count($_REQUEST)>0) log_message('debug', '('.$_SERVER['REMOTE_ADDR'].') '.$_SERVER['REQUEST_URI']);
-        //var_dump(_DOMAIN, _URL, _UID, _PASS, _PASSKEY, _TORRENT);
-        $MOVIES = array();
 
-        if($this->site_id == 1) $MOVIES = $this->bithumen();
-
-        if(count($MOVIES) < $this->limit) {
-            $this->movie_count = count($MOVIES) + (($this->pagenum - 1) * $this->limit);
+        if(strpos($this->uri->segment(1), 'carpathians') === 0)
+        {
+            $this->site_id = 2;
+            $this->lib = 'carpat';
         }
+        else # if(strpos($this->uri->segment(1), 'bithumen') === 0)
+        {
+            $this->site_id = 1;
+            $this->lib = 'bithu';
+        }
+
+        $this->runLib($this->lib);
+
+        //if(intval($this->movie_count) <= 0 || count($this->MOVIES) < $this->limit) {
+        //    $this->movie_count = count($this->MOVIES) + (($this->pagenum - 1) * $this->limit);
+        //}
 
         $DATA = array(
             'movie_count'=>$this->movie_count,
             'limit'=>$this->limit,
             'page_number'=>$this->pagenum,
-            'movies'=>$MOVIES);
+            'movies'=>$this->MOVIES);
+
+        //TODO: error handling?
         $RESPONSE = array('status'=>'ok', 'status_message'=>'Query was successful', 'data'=>$DATA);
 
         //$this->output->enable_profiler(TRUE);
@@ -64,35 +73,35 @@ class Api extends CI_Controller {
         $this->load->view('json', array('json'=>$RESPONSE));
     }
 
-    private function bithumen()
+    private function runLib($lib)
     {
-        $this->load->library('bithu');
+        $lib = (string) $lib;
 
-        $this->bithu->parse_req();
-        $this->pagenum = $this->bithu->getPagenum();
+        if($this->$lib) {
+            $this->load->library($lib);
 
-        $scrape_query = get_url_query($this->bithu->getParams());
+            $this->$lib->parse_req();
+            $this->pagenum = $this->$lib->getPagenum();
+            $this->limit = $this->$lib->getLimit();
 
-        #$this->benchmark->mark('scrape_start');
-        $HTML = scrape_url(_URL.$scrape_query, 'uid='._UID.'; pass='._PASS);
-        #$this->benchmark->mark('scrape_end');
+            #$this->benchmark->mark('scrape_start');
+            $HTML = scrape_url($this->$lib->getScrapeURL(), $this->$lib->getScrapeCookies());
+            #$this->benchmark->mark('scrape_end');
 
-        if($this->bithu->parseHTML($HTML)) {
-            $this->movie_count = $this->bithu->getMovieCount();
+            if ($this->$lib->parseHTML($HTML)) {
+                #$this->benchmark->mark('parse_start');
+                $this->$lib->parseTable();
+                #$this->benchmark->mark('parse_end');
 
-            #$this->benchmark->mark('parse_start');
-            $this->bithu->parseTable();
-            #$this->benchmark->mark('parse_end');
+                $this->movie_count = $this->$lib->getMovieCount();
 
-            $bh_movies = $this->bithu->getMovies();
-            $torrent_ids = $this->bithu->getTorrentIds();
-            $imdb_ids = $this->bithu->getImdbIds();
-            //var_dump($torrent_ids, $imdb_ids);
-            //die('--dbg');
+                $site_movies = $this->$lib->getMovies();
+                $torrent_ids = $this->$lib->getTorrentIds();
+                $imdb_ids = $this->$lib->getImdbIds();
 
-            return $this->parseMovieData($bh_movies, $torrent_ids, $imdb_ids);
+                $this->MOVIES = $this->parseMovieData($site_movies, $torrent_ids, $imdb_ids);
+            }
         }
-        return array();
 
         #echo 'scrape: '.$this->benchmark->elapsed_time('scrape_start', 'scrape_end')."\n";
         #echo 'parse: '.$this->benchmark->elapsed_time('parse_start', 'parse_end')."\n";
@@ -104,7 +113,8 @@ class Api extends CI_Controller {
         $this->kukorica->setSiteId($this->site_id);
 
         $db_torrents = $this->kukorica->get_torrents_by_ids($torrent_ids);
-        $db_movies = $this->kukorica->get_movies_by_ids($imdb_ids, 'imdb_id,locked,background_image,synopsis,year,small_cover_image,medium_cover_image,large_cover_image,title,yt_trailer_code');//,rating
+        $db_movies = $this->kukorica->get_movies_by_ids($imdb_ids,
+            'imdb_id,locked,background_image,synopsis,year,small_cover_image,medium_cover_image,large_cover_image,title,yt_trailer_code');//,rating
 
         $new_torrents = array();
         $new_movies = array();
@@ -121,54 +131,56 @@ class Api extends CI_Controller {
                     $new_torrents[] = $torrent;
                 }
                 //TODO: else { peers, seeds befrissítése ha rég volt updatelve }
-                //TODO: ha nincs imdb_id vagy nulla, ellenőrizze, hogy itt megvan-e, ill. lekérni az adatokat ez alapján
-            }
+                //TODO: ha nincs imdb_id vagy nulla, ellenőrizze, hogy itt megvan-e, ill. lekérni az adatokat torrent_id alapján
 
-            if($imdb_ids[$i] != 0) {
-                if(isset( $op_log[ $imdb_ids[$i] ] ))
-                {
-                    # QUALITY 2 RLS HAX #
-                    $qualities = array('720p', '1080p', '480p', 'HDRip');
-                    $tnum = count($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents']);
-                    if(isset($qualities[$tnum])) {
-                        //TODO: setup quality by release name (BDRip,DVDRip,TVRip,HDTV,DVBRip,Web-DL)
-                        if($tnum == 1 && intval($torrent['size_bytes']) < intval($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][0]['size_bytes'])) {
-                            $torrent['quality'] = $qualities[0];
-                            $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][0]['quality'] = $qualities[1];
-                        }//TODO: elseif($tnum>1)*prio by seeders xor BT RLS switcher*
-                        else {
-                            $torrent['quality'] = $qualities[$tnum];
-                        }
-
-                        $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][] = $torrent;
-                    }
-                    # /QUALITY 2 RLS HAX #
-                }
-                else {
-                    $op_log[ $imdb_ids[$i] ] = $i;
-
-                    if (!isset($db_movies[$imdb_ids[$i]])) // ! movies
+                if($imdb_ids[$i] != 0) {
+                    if(isset( $op_log[ $imdb_ids[$i] ] ))
                     {
-                        $movie['imdb_id'] = $imdb_ids[$i];
-                        $movie['genres'] = implode(',', $movie['genres']);
-                        $movie['cast'] = implode(',', $movie['cast']);
-                        $movie['directors'] = implode(',', $movie['directors']);
+                        # QUALITY 2 RLS HAX #
+                        $qualities = array('720p', '1080p', '480p', 'HDRip');
+                        $tnum = count($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents']);
+                        if(isset($qualities[$tnum])) {
+                            //TODO: setup quality by release name (BDRip,DVDRip,TVRip,HDTV,DVBRip,Web-DL)
+                            if($tnum == 1 && intval($torrent['size_bytes']) < intval($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][0]['size_bytes'])) {
+                                $torrent['quality'] = $qualities[0];
+                                $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][0]['quality'] = $qualities[1];
+                            }//TODO: elseif($tnum>1)*prio by seeders xor BT RLS switcher*
+                            else {
+                                $torrent['quality'] = $qualities[$tnum];
+                            }
 
-                        $new_movies[] = $movie;
-                    } else {
-                        $M =& $db_movies[$imdb_ids[$i]];
+                            $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][] = $torrent;
+                        }
+                        # /QUALITY 2 RLS HAX #
+                    }
+                    else {
+                        $op_log[ $imdb_ids[$i] ] = $i;
 
-                        if ($M['locked'] != 0) {
+                        if (!isset($db_movies[ $imdb_ids[$i] ])) // ! movies
+                        {
+                            $movie['imdb_id'] = $imdb_ids[$i];
+                            $movie['genres'] = implode(',', $movie['genres']);
+                            $movie['cast'] = implode(',', $movie['cast']);
+                            $movie['directors'] = implode(',', $movie['directors']);
+                            //rating?
+                            //yt_link
 
-                            $site_movies[$i]['background_image'] = $M['background_image'];
-                            $site_movies[$i]['synopsis'] = $M['synopsis'];
-                            $site_movies[$i]['year'] = $M['year'];
-                            $site_movies[$i]['small_cover_image'] = $M['small_cover_image'];
-                            $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
-                            $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];
-                            $site_movies[$i]['title'] = $M['title'];
-                            //$site_movies[$i]['rating'] = $M['rating'];
-                            $site_movies[$i]['yt_trailer_code'] = $M['yt_trailer_code'];
+                            $new_movies[] = $movie;
+                        } else {
+                            $M =& $db_movies[ $imdb_ids[$i] ];
+
+                            if ($M['locked'] >= 2) {
+
+                                $site_movies[$i]['background_image'] = $M['background_image'];
+                                $site_movies[$i]['synopsis'] = $M['synopsis'];
+                                $site_movies[$i]['year'] = $M['year'];
+                                $site_movies[$i]['small_cover_image'] = $M['small_cover_image'];
+                                $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
+                                $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];
+                                $site_movies[$i]['title'] = $M['title'];
+                                //$site_movies[$i]['rating'] = $M['rating'];
+                                $site_movies[$i]['yt_trailer_code'] = $M['yt_trailer_code'];
+                            }
                         }
                     }
                 }

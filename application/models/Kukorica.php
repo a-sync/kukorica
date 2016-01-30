@@ -149,7 +149,21 @@ class Kukorica extends CI_Model {
         return $query->result_array();
     }
 
+    public function get_locked_movies_without_trailer($limit = 0)
+    {
+        $query = $this->db
+            ->select('imdb_id, year, title')
+            ->from('movies')
+            ->where('year !=', 0)
+            ->where_in('locked', 2)
+            ->where('yt_trailer_code', '')
+            ->order_by('updated', 'ASC')
+            ->limit($limit)
+            ->get()
+        ;
 
+        return $query->result_array();
+    }
 
     public function update_movie($imdb_id, $data)
     {
@@ -173,21 +187,6 @@ class Kukorica extends CI_Model {
         }
 
         return $data;
-    }
-
-    public function get_movies_without_trailer($limit = 0)
-    {
-        $query = $this->db
-            ->select('imdb_id, year, title')
-            ->from('movies')
-            ->where('year !=', 0)
-            ->where('yt_trailer_code', '')
-            ->order_by('updated', 'ASC')
-            ->limit($limit)
-            ->get()
-        ;
-
-        return $query->result_array();
     }
 
     /*

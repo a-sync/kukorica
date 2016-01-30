@@ -2,6 +2,13 @@
 <project version="4">
   <component name="PublishConfigData" serverName="bigfathead.eu/kukorica/" exclude=".svn;.cvs;.idea;.DS_Store;.git;.hg;TODO.txt;">
     <serverData>
+      <paths name="127.0.0.1">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="bigfathead.eu/kukorica/">
         <serverdata>
           <mappings>

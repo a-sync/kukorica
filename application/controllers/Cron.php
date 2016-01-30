@@ -8,10 +8,10 @@
 # */5 * * * * wget -O /dev/null http://bigfathead.eu/kukorica/cron
 
 class Cron extends CI_Controller {
-    private $api_key = '4a1fe498a141725bb546cc9fd0a1a9e9';
-    private $language = 'hu';
-    private $movie_limit = NULL;
-    private $call_limit = 30;
+    private $tmdb_api_key = '4a1fe498a141725bb546cc9fd0a1a9e9';
+    private $tmdb_language = 'hu';
+    private $tmdb_movie_limit = NULL;
+    private $tmdb_call_limit = 30;
     private $time_interval = 10;
 
     private $cron_output = array();
@@ -26,12 +26,11 @@ class Cron extends CI_Controller {
             {
                 case 'elozetesek':
                     break;
+                #case 'tmdb':
                 default:
                     require_once( APPPATH . 'third_party/tmdb/tmdb-api.php' );
             }
-
         }
-
         else show_404();
     }
 
@@ -60,13 +59,18 @@ class Cron extends CI_Controller {
         else log_message('info', 'cron blocked by flock()');
         fclose($_lock);
     }
-    
+
+    private function o($str)
+    {
+        $this->cron_output[] = '['.str_pad(microtime(true), 15, '0', STR_PAD_RIGHT).'] '.$str;
+    }
+
     private function elozetesek()
     {
         $this->load->model('kukorica');
         $this->load->helper('api_helper');
 
-        $movies = $this->kukorica->get_movies_without_trailer(10);
+        $movies = $this->kukorica->get_locked_movies_without_trailer(10);
 
         if(count($movies) > 0)
         {
@@ -102,8 +106,11 @@ class Cron extends CI_Controller {
                 }
                 $this->o('resp.num = '.$res_num);
 
+                $locked = 2;
                 if($res_num > 0)
                 {
+                    $yt_trailer_code = '';
+
                     foreach($resp['responseData']['results'] as $search_result) {
                         $ueUrl = $search_result['unescapedUrl'];
                         $yt_trailer_code = get_yt_id($ueUrl);
@@ -112,30 +119,34 @@ class Cron extends CI_Controller {
 
                         if ($yt_trailer_code != '') {
                             $this->o('IMDB_ID: '.$imdb_id.' updated... <br/>'
-                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/1.jpg" alt="" style="" > '
-                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/2.jpg" alt="" style="" > '
-                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/3.jpg" alt="" style="" > '
+                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/default.jpg" alt="" style=""/> '
+                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/1.jpg" alt="" style=""/> '
+                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/2.jpg" alt="" style=""/> '
+                            .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/3.jpg" alt="" style=""/> '
                             .'<a href="'.$search_result['url'].'">'.$yt_trailer_code.'</a> <br style="clear:both;"/><br/>');
+
+                            $locked = 5;
 
                             break;
                         }
                         else
                         {
-                            //else TODO: locked ? 3??
                             log_message('debug', 'Nincs yt id találat ('.$imdb_id.'): ' . $u);
                             $this->o('Nincs yt id találat ('.$imdb_id.'): '.$u.'<br/>');
 
-                            //$this->kukorica->poke_movie($m['imdb_id']);
+                            $locked = 4;
                         }
-
-                        $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code));//POKE
                     }
                 }
                 else
-                {//else TODO: locked 2
+                {
                     log_message('debug', 'Nincs yt előzetes találat ('.$imdb_id.'): '.$u);
                     $this->o('Nincs yt előzetes találat ('.$imdb_id.'): '.$u.'<br/>');
+
+                    $locked = 4;
                 }
+
+                $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code, 'locked'=>$locked));
 
                 $r = rand(2,5);//igy talan nem blokkol egybol
                 $this->o('sleep: '.$r);
@@ -148,21 +159,16 @@ class Cron extends CI_Controller {
         }
     }
 
-    private function o($str)
-    {
-        $this->cron_output[] = '['.str_pad(microtime(true), 15, '0', STR_PAD_RIGHT).'] '.$str;
-    }
-
     private function tmdb_scrape()
     {
         $this->load->model('kukorica');
 
-            $movie_ids = $this->kukorica->get_unlocked_movie_ids($this->movie_limit);
+            $movie_ids = $this->kukorica->get_unlocked_movie_ids($this->tmdb_movie_limit);
 
             if (count($movie_ids) > 0) {
                 log_message('info', 'cron started for ' . count($movie_ids) . ' item @ ' . date('H:i:s'));
 
-                $tmdb = new TMDB($this->api_key, $this->language, false);
+                $tmdb = new TMDB($this->tmdb_api_key, $this->tmdb_language, false);
                 $ac = 0;
                 $timer = time();
 
@@ -172,7 +178,7 @@ class Cron extends CI_Controller {
                 foreach ($movie_ids as $i => $movie_id) {
                     $imdb_id = 'tt' . str_pad($movie_id['imdb_id'], 7, '0', STR_PAD_LEFT);
                     
-                    if ($ac >= $this->call_limit) {
+                    if ($ac >= $this->tmdb_call_limit) {
                         $this->go_sleep($timer, $ac);
                     }
                     $movie = $tmdb->findMovie($imdb_id);
@@ -189,20 +195,35 @@ class Cron extends CI_Controller {
                     }
                     else {
                         $movie->setAPI($tmdb);
-                        
-                        if ($ac >= $this->call_limit) {
+
+                        $locked = 2;
+
+                        if ($ac >= $this->tmdb_call_limit) {
                             $this->go_sleep($timer, $ac);
                         }
                         $movie->loadTrailer();
                         $ac++;
-                        
-                        //if($movie->getTrailer()=='')//külön kron az üres trailereknek (tmdb) id-t tárolni kellene, locked flaget bővíteni :-/
-                        //$tmdb->setLang('en');
-                        //$movie->loadTrailer();
-                        //$tmdb->setLang('hu');
+
+                        //TODO: (tmdb) id-t tárolni kellene, locked helyett flagelni az infókat :-/
+                        if($movie->getTrailer() != '')
+                        {
+                            $locked = 3;
+                        }
+                        else
+                        {
+                            $tmdb->setLang('en');
+
+                            if ($ac >= $this->tmdb_call_limit) {
+                                $this->go_sleep($timer, $ac);
+                            }
+                            $movie->loadTrailer();
+                            $ac++;
+
+                            $tmdb->setLang($this->tmdb_language);
+                        }
 
                         $movie_data = array(
-                            'locked' => 1,
+                            'locked' => $locked,
                             'background_image' => $img_config['base_url'] . $img_config['backdrop_sizes'][2] . $movie->getBackdrop(),
                             'synopsis' => $movie->get('overview'),
                             'year' => strstr($movie->get('release_date'), '-', true),

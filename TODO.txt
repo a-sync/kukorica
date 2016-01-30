@@ -2,9 +2,6 @@ cache optimalizálás (ürítés ha frissült a db, ezzel együtt hosszabb (1-2�
 
 TODO:
 * carpathians bevezetése
-* config bH specifikus dolgok a bithu librarybe
-* site_id beállítás
-* movie_count beállítás (bithu libraryból ->movie_count = getMovieCount)
 * film/eng/sd kukázása
 * poke_movie fix xor kuka
 
