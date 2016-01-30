@@ -76,32 +76,33 @@ class Api extends CI_Controller {
     private function runLib($lib)
     {
         $lib = (string) $lib;
+        $this->load->library($lib);
 
-        if($this->$lib) {
-            $this->load->library($lib);
+        if($this->load->is_loaded(ucfirst($lib))) {
 
-            $this->$lib->parse_req();
-            $this->pagenum = $this->$lib->getPagenum();
-            $this->limit = $this->$lib->getLimit();
+            $this->{$lib}->parse_req();
+            $this->pagenum = $this->{$lib}->getPagenum();
+            $this->limit = $this->{$lib}->getLimit();
 
             #$this->benchmark->mark('scrape_start');
-            $HTML = scrape_url($this->$lib->getScrapeURL(), $this->$lib->getScrapeCookies());
+            $HTML = scrape_url($this->{$lib}->getScrapeURL(), $this->{$lib}->getScrapeCookies());
             #$this->benchmark->mark('scrape_end');
 
-            if ($this->$lib->parseHTML($HTML)) {
+            if ($this->{$lib}->parseHTML($HTML)) {
                 #$this->benchmark->mark('parse_start');
-                $this->$lib->parseTable();
+                $this->{$lib}->parseTable();
                 #$this->benchmark->mark('parse_end');
 
-                $this->movie_count = $this->$lib->getMovieCount();
+                $this->movie_count = $this->{$lib}->getMovieCount();
 
-                $site_movies = $this->$lib->getMovies();
-                $torrent_ids = $this->$lib->getTorrentIds();
-                $imdb_ids = $this->$lib->getImdbIds();
+                $site_movies = $this->{$lib}->getMovies();
+                $torrent_ids = $this->{$lib}->getTorrentIds();
+                $imdb_ids = $this->{$lib}->getImdbIds();
 
                 $this->MOVIES = $this->parseMovieData($site_movies, $torrent_ids, $imdb_ids);
             }
         }
+        else log_message('error', ucfirst($lib).' library not loaded.');
 
         #echo 'scrape: '.$this->benchmark->elapsed_time('scrape_start', 'scrape_end')."\n";
         #echo 'parse: '.$this->benchmark->elapsed_time('parse_start', 'parse_end')."\n";
