@@ -5,11 +5,16 @@ TODO:
 * film/eng/sd kukázása
 * poke_movie fix xor kuka
 
+- magyar ékezeteseket hmtl char kódban küldeni!
+
 TODO:
       torrentfile-hoz info: nyelv/hu-en,NULL, cat?
       genre listet imdb / bithu alapján helyretenni
-      magyar ékezetesejket hmtl char kódban küldeni!
+
       locked opció helyett státusz flagelés
       api altal lekert/kuldott adatok matchelese a PT-vel (movie model)
       title_long movie helyett torrenthez menjen: filename
 
+* tmdb / omdb id-t tárolni kell
+* omdb scraper a frissítésekhez
+* tmdb/omdb keresés az ismeretlen filmek esetén

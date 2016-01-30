@@ -24,7 +24,6 @@ class Bithu {
     private $params;
     private $pagenum;
     private $movie_count = 10000;//TODO
-    //limit?
 
     protected $CI;
 

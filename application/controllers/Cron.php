@@ -122,7 +122,7 @@ class Cron extends CI_Controller {
                             .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/1.jpg" alt="" style=""/> '
                             .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/2.jpg" alt="" style=""/> '
                             .'<img src="http://img.youtube.com/vi/'.$yt_trailer_code.'/3.jpg" alt="" style=""/> '
-                            .'<a href="'.$search_result['unescapedUrl'].'">'.$yt_trailer_code.'</a> <br style="clear:both;"/><br/>');
+                            .'<a href="'.$ueUrl.'">'.$yt_trailer_code.'</a> <br style="clear:both;"/><br/>');
 
                             $locked = 5;
 

@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="73412185-0504-43db-97fe-753495b86600" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TODO.txt" afterPath="$PROJECT_DIR$/TODO.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Cron.php" afterPath="$PROJECT_DIR$/application/controllers/Cron.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/libraries/Bithu.php" afterPath="$PROJECT_DIR$/application/libraries/Bithu.php" />
     </list>
     <ignored path="kukorica.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,18 +30,18 @@
       <file leaf-file-name="Api.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/controllers/Api.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-35.307693">
+            <state vertical-scroll-proportion="54.923077">
               <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Cron.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Cron.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/controllers/Cron.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.17400205">
-              <caret line="109" column="38" selection-start-line="109" selection-start-column="38" selection-end-line="109" selection-end-column="38" />
+            <state vertical-scroll-proportion="-96.76923">
+              <caret line="148" column="0" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -48,8 +50,8 @@
       <file leaf-file-name="Bithu.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/libraries/Bithu.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-75.10909">
-              <caret line="243" column="0" selection-start-line="243" selection-start-column="0" selection-end-line="243" selection-end-column="0" />
+            <state vertical-scroll-proportion="-8.036364">
+              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -65,11 +67,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TODO.txt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TODO.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TODO.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="13" column="58" selection-start-line="13" selection-start-column="58" selection-end-line="13" selection-end-column="58" />
+            <state vertical-scroll-proportion="0.3220339">
+              <caret line="19" column="47" selection-start-line="19" selection-start-column="47" selection-end-line="19" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -93,11 +95,11 @@
         <option value="$PROJECT_DIR$/application/config/config.php" />
         <option value="$PROJECT_DIR$/application/config/api.php" />
         <option value="$PROJECT_DIR$/application/helpers/api_helper.php" />
-        <option value="$PROJECT_DIR$/TODO.txt" />
         <option value="$PROJECT_DIR$/application/models/Kukorica.php" />
-        <option value="$PROJECT_DIR$/application/libraries/Bithu.php" />
         <option value="$PROJECT_DIR$/application/controllers/Api.php" />
         <option value="$PROJECT_DIR$/application/controllers/Cron.php" />
+        <option value="$PROJECT_DIR$/application/libraries/Bithu.php" />
+        <option value="$PROJECT_DIR$/TODO.txt" />
       </list>
     </option>
   </component>
@@ -476,7 +478,13 @@
       <option name="project" value="LOCAL" />
       <updated>1454194879775</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="* változó deklarálás helye javítva">
+      <created>1454194980908</created>
+      <option name="number" value="00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1454194980908</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -532,7 +540,8 @@
     <MESSAGE value="* movie count fix handler comment áthelyezve a lib osztályba" />
     <MESSAGE value="* remove note comment" />
     <MESSAGE value="* cron/elozetesek outputban a yt link javítva" />
-    <option name="LAST_COMMIT_MESSAGE" value="* cron/elozetesek outputban a yt link javítva" />
+    <MESSAGE value="* változó deklarálás helye javítva" />
+    <option name="LAST_COMMIT_MESSAGE" value="* változó deklarálás helye javítva" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -892,26 +901,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TODO.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="13" column="58" selection-start-line="13" selection-start-column="58" selection-end-line="13" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/helpers/inflector_helper.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.35099337">
           <caret line="172" column="24" selection-start-line="172" selection-start-column="24" selection-end-line="172" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/libraries/Bithu.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-75.10909">
-          <caret line="243" column="0" selection-start-line="243" selection-start-column="0" selection-end-line="243" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -924,9 +917,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/application/libraries/Bithu.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.036364">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/application/controllers/Api.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-35.307693">
+        <state vertical-scroll-proportion="54.923077">
           <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
           <folding />
         </state>
@@ -934,8 +935,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/controllers/Cron.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.17400205">
-          <caret line="109" column="38" selection-start-line="109" selection-start-column="38" selection-end-line="109" selection-end-column="38" />
+        <state vertical-scroll-proportion="-96.76923">
+          <caret line="148" column="0" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TODO.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3220339">
+          <caret line="19" column="47" selection-start-line="19" selection-start-column="47" selection-end-line="19" selection-end-column="47" />
           <folding />
         </state>
       </provider>
