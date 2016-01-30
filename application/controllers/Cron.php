@@ -107,10 +107,9 @@ class Cron extends CI_Controller {
                 $this->o('resp.num = '.$res_num);
 
                 $locked = 2;
+                $yt_trailer_code = '';
                 if($res_num > 0)
                 {
-                    $yt_trailer_code = '';
-
                     foreach($resp['responseData']['results'] as $search_result) {
                         $ueUrl = $search_result['unescapedUrl'];
                         $yt_trailer_code = get_yt_id($ueUrl);
