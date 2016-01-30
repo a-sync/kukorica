@@ -247,6 +247,10 @@ class Bithu {
             $this->imdb_ids[] = ($imdb_id == '') ? 0 : intval(trim($imdb_id, 't'));
         }
 
+        //if(intval($this->movie_count) <= 0 || count($this->movies) < _LIMIT) {
+        //    $this->movie_count = count($this->movies) + (($this->pagenum - 1) * _LIMIT);
+        //}
+
         return $this;
     }
 

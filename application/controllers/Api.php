@@ -53,10 +53,6 @@ class Api extends CI_Controller {
 
         $this->runLib($this->lib);
 
-        //if(intval($this->movie_count) <= 0 || count($this->MOVIES) < $this->limit) {
-        //    $this->movie_count = count($this->MOVIES) + (($this->pagenum - 1) * $this->limit);
-        //}
-
         $DATA = array(
             'movie_count'=>$this->movie_count,
             'limit'=>$this->limit,
