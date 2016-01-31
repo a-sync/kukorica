@@ -201,6 +201,12 @@ class Bithu {
             $peers = explode(' / ', $cols->item(8)->textContent);
             $peers = intval($peers[1]);
 
+            $quality = '720p';
+            //TODO: BT v1.0.x rls típus szerint stripos( .xvid. || .xvid- || .x264. || .x264- )
+            //TODO: setup quality by release name (BDRip, DVDRip, TVRip, HDTV, DVBRip, Web-DL)
+
+
+            // KIZÁRÁSOK
             if($size_bytes < 52428800) continue;//50MB
             elseif($seeds == 0) continue;
 
@@ -254,10 +260,11 @@ class Bithu {
                 }
             }
 
+            // DATA MODEL
             $TORRENT = array(
                 'url' => str_replace(array('{PASSKEY}', '{ID}'), array(_PASSKEY, $id), _TORRENT),
                 'hash' => "",
-                'quality' => "720p",
+                'quality' => $quality,
                 'seeds' => $seeds,
                 'peers' => $peers,
                 'size' => $size,

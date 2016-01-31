@@ -139,6 +139,8 @@ class Api extends CI_Controller {
                         # QUALITY 2 RLS HAX #
                         $qualities = array('720p', '1080p', '480p', 'HDRip');
                         $tnum = count($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents']);
+
+                        //TODO: BT v1.1.x a quality switch helyett rls lista
                         if(isset($qualities[$tnum])) {
                             //TODO: setup quality by release name (BDRip,DVDRip,TVRip,HDTV,DVBRip,Web-DL)
                             if($tnum == 1 && intval($torrent['size_bytes']) < intval($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][0]['size_bytes'])) {
