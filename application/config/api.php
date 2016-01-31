@@ -8,4 +8,4 @@
 
 define('_CACHETIME', 12);
 
-$config['kukorica'] = 1;
+$config['kukorica'] = '1.0.5';
