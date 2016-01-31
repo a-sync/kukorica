@@ -175,7 +175,7 @@ class Bithu {
                         $title_slug = slugify($title);
                     }
                 } elseif (strpos($href, 'imdb.com/title/') !== false) {
-                    $tmp = substr($href, strpos($href, 'imdb.com/title/') + 15);//,9
+                    $tmp = substr($href, strpos($href, 'imdb.com/title/') + 15);
                     $imdb_id = strstr($tmp, '/', true);
                     $imdb_rating = floatval(str_replace(array('[imdb: ', ']'), '', $link->textContent));
                 } elseif ($link->hasAttribute('alt') && $link->getAttribute('alt') == 'info') {
@@ -321,7 +321,7 @@ class Bithu {
 
     private function parse_size($str)
     {
-        $tmp1 = str_replace(array('G', 'M'), array(' G', ' M'), trim($str));
+        $tmp1 = str_replace(array('G', 'M', '  '), array(' G', ' M', ' '), trim($str));
 
         if (stripos($tmp1, ' ×') === false) $tmp2 = trim($tmp1);
         else $tmp2 = trim(strstr($tmp1, ' ×', true));

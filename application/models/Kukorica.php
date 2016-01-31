@@ -69,15 +69,19 @@ class Kukorica extends CI_Model {
         $re = array();
 
         if(is_array($torrent_ids) && count($torrent_ids) > 0) {
-            $query = $this->db
-                ->select($select)
-                ->from('torrents')
-                ->where('site_id', $this->site_id)
-                ->where_in('torrent_id', array_filter($torrent_ids))
-                ->get();
+            $torrent_ids = array_filter($torrent_ids);
 
-            foreach ($query->result_array() as $r) {
-                $re[$r['torrent_id']] = $r;
+            if(count($torrent_ids) > 0) {
+                $query = $this->db
+                    ->select($select)
+                    ->from('torrents')
+                    ->where('site_id', $this->site_id)
+                    ->where_in('torrent_id', $torrent_ids)
+                    ->get();
+
+                foreach ($query->result_array() as $r) {
+                    $re[$r['torrent_id']] = $r;
+                }
             }
         }
 
@@ -89,14 +93,18 @@ class Kukorica extends CI_Model {
         $re = array();
 
         if(is_array($imdb_ids) && count($imdb_ids) > 0) {
-            $query = $this->db
-                ->select($select)
-                ->from('movies')
-                ->where_in('imdb_id', array_filter($imdb_ids))
-                ->get();
+            $imdb_ids = array_filter($imdb_ids);
 
-            foreach ($query->result_array() as $r) {
-                $re[$r['imdb_id']] = $r;
+            if(count($imdb_ids) > 0) {
+                $query = $this->db
+                    ->select($select)
+                    ->from('movies')
+                    ->where_in('imdb_id', $imdb_ids)
+                    ->get();
+
+                foreach ($query->result_array() as $r) {
+                    $re[$r['imdb_id']] = $r;
+                }
             }
         }
 
