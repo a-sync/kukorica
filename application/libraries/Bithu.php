@@ -126,6 +126,7 @@ class Bithu {
             if ($i == 0) continue;
             $cols = $node->getElementsByTagName('td');
 
+            /*
             if($this->params['cat'] == '19')
             {
                 //Film/Eng/SD esetén, ha legalább egy tucat fájl van, valószínűleg be van csomagolva :(
@@ -134,6 +135,7 @@ class Bithu {
                     continue;
                 }
             }
+            */
 
             $id = 0;
             $title = '';
@@ -196,9 +198,59 @@ class Bithu {
             $peers = explode(' / ', $cols->item(8)->textContent);
             $peers = intval($peers[1]);
 
-            if($size_bytes < 50000000) continue;
+            if($size_bytes < 52428800) continue;//50MB
             elseif($seeds == 0) continue;
-            //ha nincs .osszes, .pack, .collection, .boxset, .I-, .1-, *logy., és 15nél több fájl van akkor is skip
+
+            $filenum = intval($cols->item(2)->textContent);
+
+            $filenum_treshold = ($this->params['cat'] == '19') ? 12 : 15;//Eng = 12; Hun = 15
+            if($filenum >= $filenum_treshold)
+            {
+                $title_cut = explode('-', $title_long);
+                $releaser = array_pop($title_cut);
+                $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
+
+                if(
+                    (
+                       ($filenum <= 50  && $size_bytes > 2147483648 )//2GB
+                    || ($filenum <= 100 && $size_bytes > 10737418240)//10GB
+                    || ($filenum <= 200 && $size_bytes > 21474836480)//20GB
+                    )
+                &&  (
+                       stripos($title_cut, '.collection.') !== false
+                    || stripos($title_cut, '.pack.') !== false
+                    || stripos($title_cut, '.osszes.') !== false
+                    || stripos($title_cut, '.gyujtemeny.') !== false
+                    || stripos($title_cut, '.gyujtemenye.') !== false
+                    || stripos($title_cut, '.boxset.') !== false
+                    || stripos($title_cut, '.i-') !== false
+                    || stripos($title_cut, '.1-') !== false
+                    || stripos($title_cut, '.1.2.') !== false
+                    || stripos($title_cut, 'logy.') !== false
+                    || stripos($title_cut, 'logia.') !== false
+                    )
+                )
+                {
+                    // HA:
+                    //      több mint $filenum_treshold fájl
+                    // AKKOR:
+                    //   HA:
+                    //        max. 50  fájl ÉS nagyobb mint 2GB
+                    //        VAGY
+                    //        max. 100 fájl ÉS nagyobb mint 10GB
+                    //        VAGY
+                    //        max. 200 fájl ÉS nagyobb mint 20GB
+                    //      ÉS
+                    //        tartalmazza valemelyik kulcsszót
+                    //   AKKOR:
+                    //      (valószínűleg nem becsomagolt filmgyűjtemény)
+                }
+                else {
+                    //   KÜLÖNBEN:
+                    //      átugorjuk ennek a rögzítését
+                    continue;
+                }
+            }
 
             $TORRENT = array(
                 'url' => str_replace(array('{PASSKEY}', '{ID}'), array(_PASSKEY, $id), _TORRENT),
