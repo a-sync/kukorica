@@ -206,6 +206,10 @@ class Bithu {
             $filenum_treshold = ($this->params['cat'] == '19') ? 12 : 15;//Eng = 12; Hun = 15
             if($filenum >= $filenum_treshold)
             {
+                // HA:
+                //      több mint $filenum_treshold fájl
+                // AKKOR:
+
                 $title_cut = explode('-', $title_long);
                 $releaser = array_pop($title_cut);
                 $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
@@ -231,9 +235,6 @@ class Bithu {
                     )
                 )
                 {
-                    // HA:
-                    //      több mint $filenum_treshold fájl
-                    // AKKOR:
                     //   HA:
                     //        max. 50  fájl ÉS nagyobb mint 2GB
                     //        VAGY
@@ -247,7 +248,7 @@ class Bithu {
                 }
                 else {
                     //   KÜLÖNBEN:
-                    //      átugorjuk ennek a rögzítését
+                    //      átugorjuk ennek a rögzítését (csomagolt állományok a torrentben)
                     continue;
                 }
             }

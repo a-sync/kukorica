@@ -46,7 +46,7 @@ class Cron extends CI_Controller {
             switch($this->uri->segment(2))
             {
                 case 'elozetesek':
-                    $this->elozetesek();
+                    $this->elozetesek_google_scrape();
                     break;
                 #case 'tmdb':
                 default:
@@ -66,7 +66,7 @@ class Cron extends CI_Controller {
         $this->cron_output[] = '['.str_pad(microtime(true), 15, '0', STR_PAD_RIGHT).'] '.$str;
     }
 
-    private function elozetesek()
+    private function elozetesek_google_scrape()
     {
         $this->load->model('kukorica');
         $this->load->helper('api_helper');

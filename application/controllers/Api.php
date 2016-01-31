@@ -166,6 +166,7 @@ class Api extends CI_Controller {
                         } else {
                             $M =& $db_movies[ $imdb_ids[$i] ];
 
+                            //TODO: locked helyett egyesével vizsgáljuk meg, hogy mi áll rendelkezésre DB-ben vagy éppen hiányzik-e scrapel-t adatokból
                             if ($M['locked'] >= 2) {
 
                                 $site_movies[$i]['background_image'] = $M['background_image'];
