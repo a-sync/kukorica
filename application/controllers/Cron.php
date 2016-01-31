@@ -244,7 +244,7 @@ class Cron extends CI_Controller {
                 log_message('info', 'cron finished @ ' . date('H:i:s'));
 
                 if($updated_some) {
-                    $this->load->helper('api_helper');
+                    //$this->load->helper('api_helper');
                     //clear_all_cache();
                 }
             }

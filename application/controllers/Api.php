@@ -130,7 +130,10 @@ class Api extends CI_Controller {
                 //TODO: else { peers, seeds befrissítése ha rég volt updatelve }
                 //TODO: ha nincs imdb_id vagy nulla, ellenőrizze, hogy itt megvan-e, ill. lekérni az adatokat torrent_id alapján
 
-                if($imdb_ids[$i] != 0) {
+                if($imdb_ids[$i] == 0) {
+                    //TODO: fake imdb_code ha lehetséges, h megjelenjen mindenfelekeppen
+                }
+                else {
                     if(isset( $op_log[ $imdb_ids[$i] ] ))
                     {
                         # QUALITY 2 RLS HAX #
