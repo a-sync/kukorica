@@ -161,6 +161,7 @@ class Cron extends CI_Controller {
 
     private function tmdb_scrape()
     {
+        $updated_some = false;
         $this->load->model('kukorica');
 
             $movie_ids = $this->kukorica->get_unlocked_movie_ids($this->cron_movie_limit);
@@ -236,10 +237,16 @@ class Cron extends CI_Controller {
                         );
 
                         $this->kukorica->update_movie($imdb_id, $movie_data);
+                        $updated_some = true;
                     }
                 }
 
                 log_message('info', 'cron finished @ ' . date('H:i:s'));
+
+                if($updated_some) {
+                    $this->load->helper('api_helper');
+                    //clear_all_cache();
+                }
             }
 
     }
@@ -257,4 +264,5 @@ class Cron extends CI_Controller {
             $timer = time();
         }
     }
+
 }

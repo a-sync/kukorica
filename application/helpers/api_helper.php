@@ -115,3 +115,37 @@ if ( ! function_exists('parse_url_for_last_element')) {
         return $url;
     }
 }
+
+if ( ! function_exists('clear_all_cache')) {
+/**
+ * Clears all cache from the cache directory
+ */
+    function clear_all_cache()
+    {
+        $CI =& get_instance();
+        $path = $CI->config->item('cache_path');
+
+        $cache_path = ($path == '') ? APPPATH.'cache/' : $path;
+
+        $handle = opendir($cache_path);
+        while (($file = readdir($handle)) !== FALSE)
+        {
+            //Leave the directory protection alone
+            if ($file != '.htaccess' && $file != 'index.html')
+            {
+                @unlink($cache_path.'/'.$file);
+            }
+        }
+        closedir($handle);
+    }
+/*
+$CI =& get_instance();
+$wildcard = 'latest';
+$all_cache = $CI->cache->cache_info();
+foreach ($all_cache as $cache_id => $cache) :
+    if (strpos($cache_id, $wildcard) !== false) :
+        $CI->cache->delete($cache_id);
+    endif;
+endforeach;
+*/
+}
