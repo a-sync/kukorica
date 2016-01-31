@@ -10,7 +10,7 @@
 class Cron extends CI_Controller {
     private $tmdb_api_key = '4a1fe498a141725bb546cc9fd0a1a9e9';
     private $tmdb_language = 'hu';
-    private $tmdb_movie_limit = NULL;
+    private $cron_movie_limit = NULL;
     private $tmdb_call_limit = 30;
     private $time_interval = 10;
 
@@ -48,6 +48,7 @@ class Cron extends CI_Controller {
                 case 'elozetesek':
                     $this->elozetesek();
                     break;
+                #case 'tmdb':
                 default:
                     $this->tmdb_scrape();
             }
@@ -162,7 +163,7 @@ class Cron extends CI_Controller {
     {
         $this->load->model('kukorica');
 
-            $movie_ids = $this->kukorica->get_unlocked_movie_ids($this->tmdb_movie_limit);
+            $movie_ids = $this->kukorica->get_unlocked_movie_ids($this->cron_movie_limit);
 
             if (count($movie_ids) > 0) {
                 log_message('info', 'cron started for ' . count($movie_ids) . ' item @ ' . date('H:i:s'));

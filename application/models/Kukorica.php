@@ -135,7 +135,7 @@ class Kukorica extends CI_Model {
         return $this->db->insert_batch('movies', $movies);
     }
 
-    public function get_unlocked_movie_ids($limit = 0)
+    public function get_unlocked_movie_ids($limit = NULL)
     {
         $query = $this->db
             ->select('imdb_id')
