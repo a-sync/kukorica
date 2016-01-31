@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="bigfathead.eu/kukorica/" exclude=".svn;.cvs;.idea;.DS_Store;.git;.hg;TODO.txt;">
+  <component name="PublishConfigData" serverName="bigfathead.eu/kukorica/" exclude=".svn;.cvs;.idea;.DS_Store;.git;.hg;TODO.txt;" showNewOnTargetInSync="false">
     <serverData>
       <paths name="127.0.0.1">
         <serverdata>

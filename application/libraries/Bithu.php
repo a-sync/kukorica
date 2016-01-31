@@ -188,11 +188,14 @@ class Bithu {
                 }
             }
 
+            $filenum = intval($cols->item(2)->textContent);
+
             $date_unix = $this->parse_date($cols->item(4)->textContent);
             $date = date('Y-m-d H:i:s', $date_unix);
 
-            $size = str_replace(array('G', 'M'), array(' G', ' M'), trim($cols->item(5)->textContent));
-            $size_bytes = $this->parse_size($size);
+            $size_values = $this->parse_size($cols->item(5)->textContent);
+            $size = $size_values['text'];
+            $size_bytes = $size_values['bytes'];
 
             $seeds = intval(trim($cols->item(7)->textContent));
             $peers = explode(' / ', $cols->item(8)->textContent);
@@ -200,8 +203,6 @@ class Bithu {
 
             if($size_bytes < 52428800) continue;//50MB
             elseif($seeds == 0) continue;
-
-            $filenum = intval($cols->item(2)->textContent);
 
             $filenum_treshold = ($this->params['cat'] == '19') ? 12 : 15;//Eng = 12; Hun = 15
             if($filenum >= $filenum_treshold)
@@ -320,8 +321,13 @@ class Bithu {
 
     private function parse_size($str)
     {
+        $tmp1 = str_replace(array('G', 'M'), array(' G', ' M'), trim($str));
+
+        if (stripos($tmp1, ' ×') === false) $tmp2 = trim($tmp1);
+        else $tmp2 = trim(strstr($tmp1, ' ×', true));
+
         $bytes = 0;
-        $tmp = explode(' ', strtolower($str));
+        $tmp = explode(' ', strtolower($tmp2));
         switch ($tmp[1]) {
             case 'gib':
                 $bytes = $tmp[0] * 1073741824;
@@ -331,7 +337,7 @@ class Bithu {
                 break;
         }
 
-        return round($bytes);
+        return array('text' => $tmp2, 'bytes' => round($bytes));
     }
 
     private function parse_poster($str)
