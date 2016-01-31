@@ -18,3 +18,7 @@ TODO:
 * tmdb / omdb id-t tárolni kell
 * omdb scraper a frissítésekhez
 * tmdb/omdb keresés az ismeretlen filmek esetén
+* torrenteknél tárolni a fájlok számát is
+
+
+**admin/movies/tt00000000 aloldal basic jQuery google ajax search trailerhez + mozi adatlap + torrentek /adatok
