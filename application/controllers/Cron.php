@@ -164,40 +164,55 @@ class Cron extends CI_Controller {
         $updated_some = false;
         $this->load->model('kukorica');
 
-            $movie_ids = $this->kukorica->get_unlocked_movie_ids($this->cron_movie_limit);
+        $movie_ids = $this->kukorica->get_unlocked_movie_ids($this->cron_movie_limit);
 
-            if (count($movie_ids) > 0) {
-                log_message('info', 'cron started for ' . count($movie_ids) . ' item @ ' . date('H:i:s'));
+        if (count($movie_ids) > 0) {
+            log_message('info', 'cron started for ' . count($movie_ids) . ' item @ ' . date('H:i:s'));
 
-                $tmdb = new TMDB($this->tmdb_api_key, $this->tmdb_language, false);
-                $ac = 0;
-                $timer = time();
+            $tmdb = new TMDB($this->tmdb_api_key, $this->tmdb_language, false);
+            $ac = 0;
+            $timer = time();
 
-                $tmdb_config = $tmdb->getConfig();
-                $img_config = $tmdb_config['images'];
+            $tmdb_config = $tmdb->getConfig();
+            $img_config = $tmdb_config['images'];
 
-                foreach ($movie_ids as $i => $movie_id) {
-                    $imdb_id = 'tt' . str_pad($movie_id['imdb_id'], 7, '0', STR_PAD_LEFT);
-                    
+            foreach ($movie_ids as $i => $movie_id) {
+                $imdb_id = 'tt' . str_pad($movie_id['imdb_id'], 7, '0', STR_PAD_LEFT);
+
+                if ($ac >= $this->tmdb_call_limit) {
+                    $this->go_sleep($timer, $ac);
+                }
+                $movie = $tmdb->findMovie($imdb_id);
+                $ac++;
+
+                if ($movie === FALSE || $tmdb->getLastHttpCode() >= 400) //érvénytelen válasz
+                {
+                    log_message('error', 'cron error: '.$tmdb->getLastHttpCode().' > 400');
+                }
+                elseif ($movie === TRUE) //nem található film ezzel az id-vel
+                {
+                    log_message('error', 'cron error: $movie === true @ '.$imdb_id);
+                    $this->kukorica->update_movie($imdb_id, array('locked' => 1));
+                }
+                else {
+                    $movie->setAPI($tmdb);
+
+                    $locked = 2;
+
                     if ($ac >= $this->tmdb_call_limit) {
                         $this->go_sleep($timer, $ac);
                     }
-                    $movie = $tmdb->findMovie($imdb_id);
+                    $movie->loadTrailer();
                     $ac++;
 
-                    if ($movie === FALSE || $tmdb->getLastHttpCode() >= 400) //érvénytelen válasz
+                    //TODO: (tmdb) id-t tárolni kellene, locked helyett flagelni az infókat :-/
+                    if($movie->getTrailer() != '')
                     {
-                        log_message('error', 'cron error: '.$tmdb->getLastHttpCode().' > 400');
+                        $locked = 3;
                     }
-                    elseif ($movie === TRUE) //nem található film ezzel az id-vel
+                    else
                     {
-                        log_message('error', 'cron error: $movie === true @ '.$imdb_id);
-                        $this->kukorica->update_movie($imdb_id, array('locked' => 1));
-                    }
-                    else {
-                        $movie->setAPI($tmdb);
-
-                        $locked = 2;
+                        $tmdb->setLang('en');
 
                         if ($ac >= $this->tmdb_call_limit) {
                             $this->go_sleep($timer, $ac);
@@ -205,49 +220,34 @@ class Cron extends CI_Controller {
                         $movie->loadTrailer();
                         $ac++;
 
-                        //TODO: (tmdb) id-t tárolni kellene, locked helyett flagelni az infókat :-/
-                        if($movie->getTrailer() != '')
-                        {
-                            $locked = 3;
-                        }
-                        else
-                        {
-                            $tmdb->setLang('en');
-
-                            if ($ac >= $this->tmdb_call_limit) {
-                                $this->go_sleep($timer, $ac);
-                            }
-                            $movie->loadTrailer();
-                            $ac++;
-
-                            $tmdb->setLang($this->tmdb_language);
-                        }
-                        //TODO: genres
-                        $movie_data = array(
-                            'locked' => $locked,
-                            'background_image' => $img_config['base_url'] . $img_config['backdrop_sizes'][2] . $movie->getBackdrop(),
-                            'synopsis' => $movie->get('overview'),
-                            'year' => strstr($movie->get('release_date'), '-', true),
-                            'small_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][2] . $movie->getPoster(),
-                            'medium_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][3] . $movie->getPoster(),
-                            'large_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][5] . $movie->getPoster(),
-                            'title' => $movie->getTitle(),
-                            //'rating' => $movie->get('vote_average')
-                            'yt_trailer_code' => $movie->getTrailer()
-                        );
-
-                        $this->kukorica->update_movie($imdb_id, $movie_data);
-                        $updated_some = true;
+                        $tmdb->setLang($this->tmdb_language);
                     }
-                }
+                    //TODO: genres
+                    $movie_data = array(
+                        'locked' => $locked,
+                        'background_image' => $img_config['base_url'] . $img_config['backdrop_sizes'][2] . $movie->getBackdrop(),
+                        'synopsis' => $movie->get('overview'),
+                        'year' => strstr($movie->get('release_date'), '-', true),
+                        'small_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][2] . $movie->getPoster(),
+                        'medium_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][3] . $movie->getPoster(),
+                        'large_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][5] . $movie->getPoster(),
+                        'title' => $movie->getTitle(),
+                        //'rating' => $movie->get('vote_average')
+                        'yt_trailer_code' => $movie->getTrailer()
+                    );
 
-                log_message('info', 'cron finished @ ' . date('H:i:s'));
-
-                if($updated_some) {
-                    //$this->load->helper('api_helper');
-                    //clear_all_cache();
+                    $this->kukorica->update_movie($imdb_id, $movie_data);
+                    $updated_some = true;
                 }
             }
+
+            log_message('info', 'cron finished @ ' . date('H:i:s'));
+
+            if($updated_some) {
+                //$this->load->helper('api_helper');
+                //clear_all_cache();
+            }
+        }
 
     }
     
