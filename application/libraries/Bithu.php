@@ -210,12 +210,14 @@ class Bithu {
              || stripos($title_cut, '.x264-'))
             {
                 $quality = '1080p';
+                $quality = '720p';//TODO: BR v1.0.6 után megfordítani (alap quality 1080p)
             }
             else
             #if( stripos($title_cut, '.xvid.')
             # || stripos($title_cut, '.xvid-'))
             {
                 $quality = '720p';
+                $quality = '1080p';//TODO: BR v1.0.6 után megfordítani (alap quality 1080p)
             }
 
             // KIZÁRÁSOK
