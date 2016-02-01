@@ -222,7 +222,7 @@ class Cron extends CI_Controller {
 
                             $tmdb->setLang($this->tmdb_language);
                         }
-
+                        //TODO: genres
                         $movie_data = array(
                             'locked' => $locked,
                             'background_image' => $img_config['base_url'] . $img_config['backdrop_sizes'][2] . $movie->getBackdrop(),
