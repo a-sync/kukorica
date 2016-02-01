@@ -24,8 +24,8 @@ class Api extends CI_Controller {
 
         if($this->agent->agent_string() == ''
         && (
-                $this->input->get('cat') == 'Film/Hun/SD'//--remove
-            ||  $this->input->get('cat') == 'Film/Eng/SD'//--remove
+                $this->input->get('cat') == 'Film/Hun/SD'//--remove @ BT v1.0.6
+            ||  $this->input->get('cat') == 'Film/Eng/SD'//--remove @ BT v1.0.6
             ||  $this->input->get('cat') == 'Hun'
             ||  $this->input->get('cat') == 'Eng'
           ))
