@@ -4,6 +4,7 @@ TODO:
 * carpathians bevezetése
 * film/eng/sd kukázása
 * poke_movie fix xor kuka
+* torrent_id-t átvezetni a torrent data model-be
 
 - magyar ékezeteseket hmtl char kódban küldeni!
 

@@ -206,15 +206,15 @@ class Bithu {
             $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
 
             $quality = '720p';
-            if( stripos($title_cut, '.x264.')
-             || stripos($title_cut, '.x264-'))
+            if( stripos($title_long, '.x264.')
+             || stripos($title_long, '.x264-'))
             {
                 $quality = '1080p';
                 $quality = '720p';//TODO: BR v1.0.6 után megfordítani (alap quality 1080p)
             }
             else
-            #if( stripos($title_cut, '.xvid.')
-            # || stripos($title_cut, '.xvid-'))
+            #if( stripos($title_long, '.xvid.')
+            # || stripos($title_long, '.xvid-'))
             {
                 $quality = '720p';
                 $quality = '1080p';//TODO: BR v1.0.6 után megfordítani (alap quality 1080p)
