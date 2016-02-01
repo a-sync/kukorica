@@ -201,10 +201,22 @@ class Bithu {
             $peers = explode(' / ', $cols->item(8)->textContent);
             $peers = intval($peers[1]);
 
-            $quality = '720p';
-            //TODO: BT v1.0.x rls típus szerint stripos( .xvid. || .xvid- || .x264. || .x264- )
-            //TODO: setup quality by release name (BDRip, DVDRip, TVRip, HDTV, DVBRip, Web-DL)
+            $title_cut = explode('-', $title_long);
+            $releaser = array_pop($title_cut);
+            $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
 
+            $quality = '720p';
+            if( stripos($title_cut, '.x264.')
+             || stripos($title_cut, '.x264-'))
+            {
+                $quality = '1080p';
+            }
+            else
+            #if( stripos($title_cut, '.xvid.')
+            # || stripos($title_cut, '.xvid-'))
+            {
+                $quality = '720p';
+            }
 
             // KIZÁRÁSOK
             if($size_bytes < 52428800) continue;//50MB
@@ -216,10 +228,6 @@ class Bithu {
                 // HA:
                 //      több mint $filenum_treshold fájl
                 // AKKOR:
-
-                $title_cut = explode('-', $title_long);
-                $releaser = array_pop($title_cut);
-                $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
 
                 if(
                     (
@@ -271,6 +279,7 @@ class Bithu {
                 'size_bytes' => (string)$size_bytes,
                 'date_uploaded' => $date,
                 'date_uploaded_unix' => $date_unix
+                //TODO: torrent_id-t rögzíteni itt, és Api cont.-ben kiiktatni a felülírást
             );
 
             $MOVIE = array(

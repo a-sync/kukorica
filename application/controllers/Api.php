@@ -119,74 +119,109 @@ class Api extends CI_Controller {
         $op_log = array();
         foreach($site_movies as $i => $movie)
         {
-            foreach($movie['torrents'] as $j => $torrent) {
+            $qualities = array(
+                '1080p'=>'1080p',
+                '720p' =>'720p',
+                '480p' =>'480p',
+                'hdrip'=>'HDRip'
+            );
+
+            foreach($movie['torrents'] as $j => $torrent)
+            {
+                //TODO: ha nincs imdb_id vagy nulla, ellenőrizze, hogy itt megvan-e, ill. lekérni az adatokat torrent_id alapján
+
+                if($imdb_ids[$i] == 0) {
+                    //TODO: fake imdb_code ha lehetséges, h megjelenjen mindenféleképpen
+                }
+                else
+                {
+                    if( ! isset( $op_log[ $imdb_ids[$i] ] ))
+                    {
+                        $op_log[ $imdb_ids[$i] ] = $i;
+
+                        if(count($qualities) > 0)
+                        {
+                            if ( ! isset($qualities[ strtolower($torrent['quality']) ]))
+                            {
+                                $torrent['quality'] = array_shift($qualities);
+
+                                $T =& $site_movies[$i]['torrents'];
+                                $T[$j]['quality'] = $torrent['quality'];
+                            }
+                            else
+                            {
+                                unset($qualities[ strtolower($torrent['quality']) ]);
+                            }
+
+                            if (!isset($db_movies[$imdb_ids[$i]])) // ! movies
+                            {
+                                $movie['imdb_id'] = $imdb_ids[$i];
+                                $movie['genres'] = implode(',', $movie['genres']);
+                                $movie['cast'] = implode(',', $movie['cast']);
+                                $movie['directors'] = implode(',', $movie['directors']);
+                                //rating?
+                                //yt_link
+
+                                $new_movies[] = $movie;
+                            }
+                            else
+                            {
+                                $M =& $db_movies[$imdb_ids[$i]];
+
+                                //TODO: locked helyett egyesével vizsgáljuk meg, hogy mi áll rendelkezésre DB-ben vagy éppen hiányzik-e scrapel-t adatokból
+                                if ($M['locked'] >= 2)
+                                {
+                                    $site_movies[$i]['background_image'] = $M['background_image'];
+                                    $site_movies[$i]['synopsis'] = $M['synopsis'];
+                                    $site_movies[$i]['year'] = $M['year'];
+                                    $site_movies[$i]['small_cover_image'] = $M['small_cover_image'];
+                                    $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
+                                    $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];
+                                    $site_movies[$i]['title'] = $M['title'];
+                                    //$site_movies[$i]['rating'] = $M['rating'];
+                                    $site_movies[$i]['yt_trailer_code'] = $M['yt_trailer_code'];
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        $T =& $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'];
+
+                        //TODO: BT v1.1.x a quality switch helyett rls lista
+                        foreach($T as $ti => $torrent_item)
+                        {
+                            if(isset($qualities[ strtolower($torrent_item['quality']) ]))
+                            {
+                                unset($qualities[ strtolower($torrent_item['quality']) ]);
+                            }
+                        }
+
+                        if(count($qualities) > 0) {
+                            if ( ! isset($qualities[ strtolower($torrent['quality']) ]))
+                            {
+                                $torrent['quality'] = array_shift($qualities);
+                            }
+                            else
+                            {
+                                unset($qualities[ strtolower($torrent['quality']) ]);
+                            }
+
+                            $T[] = $torrent;
+                        }
+
+                        if(isset($site_movies[$i])) unset($site_movies[$i]);
+                    }
+                }
+
                 if( ! isset( $db_torrents[ $torrent_ids[$i] ] )) { // ! torrents
                     $torrent['site_id']     = $this->site_id;
-                    $torrent['torrent_id']  = $torrent_ids[$i];
+                    $torrent['torrent_id']  = $torrent_ids[$i];//TODO: e helyett Bithu lib adatoknál torrent_id-t rögzíteni
                     $torrent['imdb_id']     = $imdb_ids[$i];
 
                     $new_torrents[] = $torrent;
                 }
                 //TODO: else { peers, seeds befrissítése ha rég volt updatelve }
-                //TODO: ha nincs imdb_id vagy nulla, ellenőrizze, hogy itt megvan-e, ill. lekérni az adatokat torrent_id alapján
-
-                if($imdb_ids[$i] == 0) {
-                    //TODO: fake imdb_code ha lehetséges, h megjelenjen mindenfelekeppen
-                }
-                else {
-                    if(isset( $op_log[ $imdb_ids[$i] ] ))
-                    {
-                        # QUALITY 2 RLS HAX #
-                        $qualities = array('720p', '1080p', '480p', 'HDRip');
-                        $tnum = count($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents']);
-
-                        //TODO: BT v1.1.x a quality switch helyett rls lista
-                        if(isset($qualities[$tnum])) {
-                            //TODO: setup quality by release name (BDRip,DVDRip,TVRip,HDTV,DVBRip,Web-DL)
-                            if($tnum == 1 && intval($torrent['size_bytes']) < intval($site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][0]['size_bytes'])) {
-                                $torrent['quality'] = $qualities[0];
-                                $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][0]['quality'] = $qualities[1];
-                            }//TODO: elseif($tnum>1)*prio by seeders xor BT RLS switcher*
-                            else {
-                                $torrent['quality'] = $qualities[$tnum];
-                            }
-
-                            $site_movies[$op_log[ $imdb_ids[$i] ]]['torrents'][] = $torrent;
-                        }
-                        # /QUALITY 2 RLS HAX #
-                    }
-                    else {
-                        $op_log[ $imdb_ids[$i] ] = $i;
-
-                        if (!isset($db_movies[ $imdb_ids[$i] ])) // ! movies
-                        {
-                            $movie['imdb_id'] = $imdb_ids[$i];
-                            $movie['genres'] = implode(',', $movie['genres']);
-                            $movie['cast'] = implode(',', $movie['cast']);
-                            $movie['directors'] = implode(',', $movie['directors']);
-                            //rating?
-                            //yt_link
-
-                            $new_movies[] = $movie;
-                        } else {
-                            $M =& $db_movies[ $imdb_ids[$i] ];
-
-                            //TODO: locked helyett egyesével vizsgáljuk meg, hogy mi áll rendelkezésre DB-ben vagy éppen hiányzik-e scrapel-t adatokból
-                            if ($M['locked'] >= 2) {
-
-                                $site_movies[$i]['background_image'] = $M['background_image'];
-                                $site_movies[$i]['synopsis'] = $M['synopsis'];
-                                $site_movies[$i]['year'] = $M['year'];
-                                $site_movies[$i]['small_cover_image'] = $M['small_cover_image'];
-                                $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
-                                $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];
-                                $site_movies[$i]['title'] = $M['title'];
-                                //$site_movies[$i]['rating'] = $M['rating'];
-                                $site_movies[$i]['yt_trailer_code'] = $M['yt_trailer_code'];
-                            }
-                        }
-                    }
-                }
             }
         }
 
