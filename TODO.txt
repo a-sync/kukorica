@@ -1,25 +1,23 @@
-cache optimalizálás (ürítés ha frissült a db, ezzel együtt hosszabb (1-2ó? cachetime))
-
 TODO:
-* carpathians bevezetése
-* film/eng/sd kukázása
-* poke_movie fix xor kuka
-* torrent_id-t átvezetni a torrent data model-be
-
-- magyar ékezeteseket hmtl char kódban küldeni!
-
-TODO:
+    * film/eng/sd kukázása
+    * poke_movie fix xor kuka
+    * torrent_id-t átvezetni a torrent data model-be
+    
       torrentfile-hoz info: nyelv/hu-en,NULL, cat?
       genre listet imdb / bithu alapján helyretenni
-
+      magyar ékezeteseket hmtl char kódban küldeni!
+      
       locked opció helyett státusz flagelés
       api altal lekert/kuldott adatok matchelese a PT-vel (movie model)
       title_long movie helyett torrenthez menjen: filename
 
-* tmdb / omdb id-t tárolni kell
-* omdb scraper a frissítésekhez
+    * tmdb / omdb id-t tárolni kell
+    * torrenteknél tárolni a fájlok számát is
+    * carpathians bevezetése
+
+CRON:
 * tmdb/omdb keresés az ismeretlen filmek esetén
-* torrenteknél tárolni a fájlok számát is
+* omdb scraper a frissítésekhez
 
-
+WEB:
 **admin/movies/tt00000000 aloldal basic jQuery google ajax search trailerhez + mozi adatlap + torrentek /adatok
