@@ -51,7 +51,7 @@ class Api extends CI_Controller {
             $this->lib = 'bithu';
         }
 
-        $this->runLib($this->lib);
+        $this->runScraper($this->lib);
 
         $DATA = array(
             'movie_count'=>$this->movie_count,
@@ -69,24 +69,35 @@ class Api extends CI_Controller {
         $this->load->view('json', array('json'=>$RESPONSE));
     }
 
-    private function runLib($lib)
+    private function runScraper($lib)
     {
         $lib = (string) $lib;
         $this->load->library($lib);
 
         if($this->load->is_loaded(ucfirst($lib))) {
 
-            $this->{$lib}->parse_req();
+            // Not used atm.:
+            // &limit=50&with_rt_ratings=true&lang=hu
+            // &quality=1080p&order_by=asc
+            // Check! app/config/config.php [cache_query_string]
+            $this->{$lib}->parseReq($this->input->get(array(
+                'page',
+                'cat',
+                'sort_by',
+                'genre',
+                'query_term'
+            ), TRUE));
+
             $this->pagenum = $this->{$lib}->getPagenum();
             $this->limit = $this->{$lib}->getLimit();
 
             #$this->benchmark->mark('scrape_start');
-            $HTML = scrape_url($this->{$lib}->getScrapeURL(), $this->{$lib}->getScrapeCookies());
+            $SCRAPED_DATA = scrape_url($this->{$lib}->getScrapeUrl(), $this->{$lib}->getScrapeCookies());
             #$this->benchmark->mark('scrape_end');
 
-            if ($this->{$lib}->parseHTML($HTML)) {
+            if ($this->{$lib}->loadContent($SCRAPED_DATA)) {
                 #$this->benchmark->mark('parse_start');
-                $this->{$lib}->parseTable();
+                $this->{$lib}->parseMovies();
                 #$this->benchmark->mark('parse_end');
 
                 $this->movie_count = $this->{$lib}->getMovieCount();
@@ -95,7 +106,10 @@ class Api extends CI_Controller {
                 $torrent_ids = $this->{$lib}->getTorrentIds();
                 $imdb_ids = $this->{$lib}->getImdbIds();
 
-                $this->MOVIES = $this->parseMovieData($site_movies, $torrent_ids, $imdb_ids);
+                if(is_array($site_movies) && count($site_movies) > 0) {
+                    $this->MOVIES = $this->parseMovieData($site_movies, $torrent_ids, $imdb_ids);
+                }
+                else log_message('debug', 'Empty result from URL: '.$this->{$lib}->getScrapeUrl().' $site_movies = '.print_r($site_movies,true));
             }
         }
         else log_message('error', ucfirst($lib).' library not loaded.');
@@ -171,15 +185,17 @@ class Api extends CI_Controller {
                                 //TODO: locked helyett egyesével vizsgáljuk meg, hogy mi áll rendelkezésre DB-ben vagy éppen hiányzik-e scrapel-t adatokból
                                 if ($M['locked'] >= 2)
                                 {
-                                    $site_movies[$i]['background_image'] = $M['background_image'];
-                                    $site_movies[$i]['synopsis'] = $M['synopsis'];
-                                    $site_movies[$i]['year'] = $M['year'];
-                                    $site_movies[$i]['small_cover_image'] = $M['small_cover_image'];
-                                    $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
-                                    $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];
-                                    $site_movies[$i]['title'] = $M['title'];
+                                    if($M['year']) $site_movies[$i]['year'] = $M['year'];
+                                    if($M['title']) $site_movies[$i]['title'] = $M['title'];
+                                    if($M['synopsis']) $site_movies[$i]['synopsis'] = $M['synopsis'];
+
+                                    if($M['background_image']) $site_movies[$i]['background_image'] = $M['background_image'];
+                                    if($M['small_cover_image']) $site_movies[$i]['small_cover_image'] = $M['small_cover_image'];
+                                    if($M['medium_cover_image']) $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
+                                    if($M['large_cover_image']) $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];
+
                                     //$site_movies[$i]['rating'] = $M['rating'];
-                                    $site_movies[$i]['yt_trailer_code'] = $M['yt_trailer_code'];
+                                    if($M['yt_trailer_code']) $site_movies[$i]['yt_trailer_code'] = $M['yt_trailer_code'];
                                 }
                             }
                         }

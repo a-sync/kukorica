@@ -15,65 +15,27 @@ define('_URL', _DOMAIN.'/browse.php?');
 define('_PASSKEY', '{PASSKEY}');
 define('_TORRENT', _DOMAIN.'/download/{PASSKEY}/{ID}.torrent');
 
-class Bithu {
+require_once( APPPATH . 'third_party/abstract/Scraper.abstract.php' );
 
-    private $torrenttable;
-    private $movies;
-    private $torrent_ids;
-    private $imdb_ids;
+class Bithu extends Scraper {
     private $params;
-    private $pagenum;
-    private $movie_count = 10000;//TODO
+    private $torrenttable;
 
-    protected $CI;
+    protected $pagenum;
+    protected $limit = _LIMIT;//felhasználó beállítástól függ (1-100)
 
-    public function __construct()
+    protected $movie_count = 10000;//TODO
+    protected $movies;
+    protected $torrent_ids;
+    protected $imdb_ids;
+
+    protected function getParams($key = FALSE)
     {
-        $this->CI =& get_instance();
-    }
-
-    public function getTable()
-    {
-        return $this->torrenttable;
-    }
-
-    public function getMovies()
-    {
-        return $this->movies;
-    }
-
-    public function getTorrentIds()
-    {
-        return $this->torrent_ids;
-    }
-
-    public function getImdbIds()
-    {
-        return $this->imdb_ids;
-    }
-
-    public function getParams($key = FALSE)
-    {
-        if($key != FALSE) return $this->params[$key];
+        if($key !== FALSE) return $this->params[$key];
         else return $this->params;
     }
 
-    public function getPagenum()
-    {
-        return $this->pagenum;
-    }
-
-    public function getMovieCount()
-    {
-        return $this->movie_count;
-    }
-
-    public function getLimit()
-    {
-        return _LIMIT;
-    }
-
-    public function getScrapeURL()
+    public function getScrapeUrl()
     {
         $scrape_query = get_url_query($this->getParams());
         return _URL.$scrape_query;
@@ -84,14 +46,90 @@ class Bithu {
         return 'uid='._UID.'; pass='._PASS;
     }
 
-    public function parseHTML($str)
+    public function parseReq($INPUT)
+    {
+        if(is_numeric($INPUT['page'])){
+            $this->pagenum = intval($INPUT['page']);
+        } else {
+            $this->pagenum = 1;
+        }
+
+        $params = array(
+            'cat' => (strpos($INPUT['cat'], 'Eng') !== false)?'19':'23',#19:Film/Eng/SD #23:Film/Hun/SD;
+            'page' => $this->pagenum - 1,
+            'd' => 'DESC'//order_by=asc
+        );
+
+        switch($INPUT['sort_by'])
+        {
+            case 'views':
+            case 'popularity':
+            case 'download_count': # megtekintések
+                $params['sort'] = 'times_completed';
+                break;
+            case 'trending':
+            case 'seeds': # seedek
+                $params['sort'] = 'seeders';
+                break;
+            case 'rating': # értékelés
+                $params['sort'] = 'rating';
+                break;
+            default://date_added # utoljára hozzáadva
+                $params['sort'] = 'added';
+        }
+
+        switch($INPUT['genre'])
+        {
+            //case 'All': $params['genre'] = 0; break;
+            case 'Action': $params['genre'] = 1; break;
+            case 'Adventure': $params['genre'] = 2; break;
+            case 'Animation': $params['genre'] = 3; break;
+            case 'Biography': $params['genre'] = 4; break;
+            case 'Comedy': $params['genre'] = 5; break;
+            case 'Crime': $params['genre'] = 6; break;
+            case 'Documentary': $params['genre'] = 7; break;
+            case 'Drama': $params['genre'] = 8; break;
+            case 'Family': $params['genre'] = 9; break;
+            case 'Fantasy': $params['genre'] = 10; break;
+            case 'Film-Noir': $params['genre'] = 11; break;
+            case 'Gameshow': $params['genre'] = 12; break;
+            case 'History': $params['genre'] = 13; break;
+            case 'Horror': $params['genre'] = 14; break;
+            case 'Music': $params['genre'] = 15; break;
+            case 'Musical': $params['genre'] = 16; break;
+            case 'Mystery': $params['genre'] = 17; break;
+            case 'News': $params['genre'] = 18; break;
+            case 'Reality': $params['genre'] = 19; break;
+            case 'Romance': $params['genre'] = 20; break;
+            case 'Sci-Fi': $params['genre'] = 21; break;
+            case 'Short': $params['genre'] = 22; break;
+            case 'Sport': $params['genre'] = 23; break;
+            case 'Talkshow': $params['genre'] = 24; break;
+            case 'Thriller': $params['genre'] = 25; break;
+            case 'War': $params['genre'] = 26; break;
+            case 'Western': $params['genre'] = 27; break;
+        }
+
+        if($INPUT['query_term'])
+        {
+            $qs = mb_convert_encoding($INPUT['query_term'], 'ISO-8859-2');
+
+            $params['search'] = urlencode($qs);
+        }
+
+        $this->params = $params;
+
+        return $this;
+    }
+
+    public function loadContent($SCRAPED_DATA)
     {
         $dom = new DOMDocument;
         $dom->strictErrorChecking = FALSE;
         //$dom->validateOnParse = true;
         $previous_errors = libxml_use_internal_errors(TRUE);
 
-        if($dom->loadHTML($str)) {
+        if($dom->loadHTML($SCRAPED_DATA)) {
 
             libxml_clear_errors();
             libxml_use_internal_errors($previous_errors);
@@ -115,7 +153,7 @@ class Bithu {
         return FALSE;
     }
 
-    public function parseTable()
+    public function parseMovies()
     {
         $this->movies = array();
         $this->torrent_ids = array();
@@ -125,17 +163,6 @@ class Bithu {
         foreach($rows as $i => $node) {
             if ($i == 0) continue;
             $cols = $node->getElementsByTagName('td');
-
-            /*
-            if($this->params['cat'] == '19')
-            {
-                //Film/Eng/SD esetén, ha legalább egy tucat fájl van, valószínűleg be van csomagolva :(
-                if(intval($cols->item(2)->textContent) >= 12)
-                {
-                    continue;
-                }
-            }
-            */
 
             $id = 0;
             $title = '';
@@ -270,7 +297,7 @@ class Bithu {
                 }
             }
 
-            // DATA MODEL
+            // DATA MODEL TODO: külön absztrakt osztály adja vissza az alap modeleket db-vel szinkronba hozva
             $TORRENT = array(
                 'url' => str_replace(array('{PASSKEY}', '{ID}'), array(_PASSKEY, $id), _TORRENT),
                 'hash' => "",
@@ -314,7 +341,7 @@ class Bithu {
             );
 
             $this->movies[] = $MOVIE;
-            $this->torrent_ids[] = $id;
+            $this->torrent_ids[] = $id;//TODO torrenthez tárolandó
             $this->imdb_ids[] = ($imdb_id == '') ? 0 : intval(trim($imdb_id, 't'));
         }
 
@@ -325,6 +352,7 @@ class Bithu {
         return $this;
     }
 
+    /** HELPERS **/
     private function parse_date($str)
     {
         if (stripos($str, ' ×') === false) $tmp1 = trim($str);
@@ -373,84 +401,4 @@ class Bithu {
         return array('small' => $small, 'orig' => $orig);
     }
 
-    //&limit=50&with_rt_ratings=true&lang=hu
-    //&quality=1080p&order_by=asc
-    public function parse_req()
-    {
-        // Check! app/config/config.php [cache_query_string]
-
-        if(is_numeric($this->CI->input->get('page'))){
-            $this->pagenum = intval($this->CI->input->get('page'));
-        } else {
-            $this->pagenum = 1;
-        }
-
-        $params = array(
-            'cat' => (strpos($this->CI->input->get('cat'), 'Eng') !== false)?'19':'23',#19:Film/Eng/SD #23:Film/Hun/SD;
-            'page' => $this->pagenum - 1,
-            'd' => 'DESC'//order_by=asc
-        );
-
-        switch($this->CI->input->get('sort_by'))
-        {
-            case 'views':
-            case 'popularity':
-            case 'download_count': # megtekintések
-                $params['sort'] = 'times_completed';
-                break;
-            case 'trending':
-            case 'seeds': # seedek
-                $params['sort'] = 'seeders';
-                break;
-            case 'rating': # értékelés
-                $params['sort'] = 'rating';
-                break;
-            default://date_added # utoljára hozzáadva
-                $params['sort'] = 'added';
-        }
-
-        switch($this->CI->input->get('genre'))
-        {
-            //case 'All': $params['genre'] = 0; break;
-            case 'Action': $params['genre'] = 1; break;
-            case 'Adventure': $params['genre'] = 2; break;
-            case 'Animation': $params['genre'] = 3; break;
-            case 'Biography': $params['genre'] = 4; break;
-            case 'Comedy': $params['genre'] = 5; break;
-            case 'Crime': $params['genre'] = 6; break;
-            case 'Documentary': $params['genre'] = 7; break;
-            case 'Drama': $params['genre'] = 8; break;
-            case 'Family': $params['genre'] = 9; break;
-            case 'Fantasy': $params['genre'] = 10; break;
-            case 'Film-Noir': $params['genre'] = 11; break;
-            case 'Gameshow': $params['genre'] = 12; break;
-            case 'History': $params['genre'] = 13; break;
-            case 'Horror': $params['genre'] = 14; break;
-            case 'Music': $params['genre'] = 15; break;
-            case 'Musical': $params['genre'] = 16; break;
-            case 'Mystery': $params['genre'] = 17; break;
-            case 'News': $params['genre'] = 18; break;
-            case 'Reality': $params['genre'] = 19; break;
-            case 'Romance': $params['genre'] = 20; break;
-            case 'Sci-Fi': $params['genre'] = 21; break;
-            case 'Short': $params['genre'] = 22; break;
-            case 'Sport': $params['genre'] = 23; break;
-            case 'Talkshow': $params['genre'] = 24; break;
-            case 'Thriller': $params['genre'] = 25; break;
-            case 'War': $params['genre'] = 26; break;
-            case 'Western': $params['genre'] = 27; break;
-        }
-
-        $qt = $this->CI->input->get('query_term', TRUE);
-        if($qt)
-        {
-            $qs = mb_convert_encoding($qt, 'ISO-8859-2');
-
-            $params['search'] = urlencode($qs);
-        }
-
-        $this->params = $params;
-
-        return $this;
-    }
 }
