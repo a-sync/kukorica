@@ -125,7 +125,8 @@ class Api extends CI_Controller {
 
         $db_torrents = $this->kukorica->get_torrents_by_ids($torrent_ids);
         $db_movies = $this->kukorica->get_movies_by_ids($imdb_ids,
-            'imdb_id,locked,background_image,synopsis,year,small_cover_image,medium_cover_image,large_cover_image,title,yt_trailer_code');//,rating
+            'imdb_id,locked,background_image,synopsis,year,yt_trailer_code,title,rating,'
+           .'small_cover_image,medium_cover_image,large_cover_image');
 
         $new_torrents = array();
         $new_movies = array();
@@ -173,8 +174,6 @@ class Api extends CI_Controller {
                                 $movie['genres'] = implode(',', $movie['genres']);
                                 $movie['cast'] = implode(',', $movie['cast']);
                                 $movie['directors'] = implode(',', $movie['directors']);
-                                //rating?
-                                //yt_link
 
                                 $new_movies[] = $movie;
                             }
@@ -182,7 +181,6 @@ class Api extends CI_Controller {
                             {
                                 $M =& $db_movies[$imdb_ids[$i]];
 
-                                //TODO: locked helyett egyesével vizsgáljuk meg, hogy mi áll rendelkezésre DB-ben vagy éppen hiányzik-e scrapel-t adatokból
                                 if ($M['locked'] >= 2)
                                 {
                                     if($M['year']) $site_movies[$i]['year'] = $M['year'];
@@ -194,7 +192,7 @@ class Api extends CI_Controller {
                                     if($M['medium_cover_image']) $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
                                     if($M['large_cover_image']) $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];
 
-                                    //$site_movies[$i]['rating'] = $M['rating'];
+                                    if($M['rating']) $site_movies[$i]['rating'] = $M['rating'];
                                     if($M['yt_trailer_code']) $site_movies[$i]['yt_trailer_code'] = $M['yt_trailer_code'];
                                 }
                             }
