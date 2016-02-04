@@ -1,12 +1,11 @@
 TODO:
     * film/eng/sd kukázása
-    * poke_movie fix xor kuka
-    * torrent_id-t átvezetni a torrent data model-be
+    * poke_movie fix XOR kuka
+    * torrent_id-t átvezetni a torrent data modelbe
     
       torrentfile-hoz info: nyelv/hu-en,NULL, cat?
       genre listet imdb / bithu alapján helyretenni
-      magyar ékezeteseket hmtl char kódban küldeni!
-      
+
       locked opció helyett státusz flagelés
       api altal lekert/kuldott adatok matchelese a PT-vel (movie model)
       title_long movie helyett torrenthez menjen: filename

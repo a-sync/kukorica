@@ -125,8 +125,8 @@ class Api extends CI_Controller {
 
         $db_torrents = $this->kukorica->get_torrents_by_ids($torrent_ids);
         $db_movies = $this->kukorica->get_movies_by_ids($imdb_ids,
-            'imdb_id,locked,background_image,synopsis,year,yt_trailer_code,title,rating,'
-           .'small_cover_image,medium_cover_image,large_cover_image');
+            'imdb_id,year,title,synopsis,yt_trailer_code,locked,rating,'
+           .'background_image,small_cover_image,medium_cover_image,large_cover_image');
 
         $new_torrents = array();
         $new_movies = array();
