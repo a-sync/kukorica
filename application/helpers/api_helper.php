@@ -69,6 +69,18 @@ if ( ! function_exists('get_yt_id')) {
         return $video_id;
     }
 }
+if ( ! function_exists('check_yt_exists')) {
+    function check_yt_exists($videoID) {
+        $theURL = "http://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=$videoID&format=json";
+        $headers = get_headers($theURL);
+
+        if (strpos($headers[0], '404') === false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
 
 if ( ! function_exists('parse_url_for_params')) {
 # https://gist.github.com/astockwell/11055104

@@ -169,6 +169,8 @@ class Cron extends CI_Controller {
         if (count($movie_ids) > 0) {
             log_message('info', 'cron started for ' . count($movie_ids) . ' item @ ' . date('H:i:s'));
 
+            //TODO: imdb keresés angol, utána tmdb id lekérés magyar beállítással menjen
+            //TODO: magyar adatok írják felül amit lehet
             $tmdb = new TMDB($this->tmdb_api_key, $this->tmdb_language, false);
             $ac = 0;
             $timer = time();
@@ -222,6 +224,10 @@ class Cron extends CI_Controller {
 
                         $tmdb->setLang($this->tmdb_language);
                     }
+
+                    //TODO: check_yt_exists
+                    //TODO: fallback az angol-ra ha megbukik a check
+
                     //TODO: genres
                     $movie_data = array(
                         'locked' => $locked,
@@ -265,4 +271,6 @@ class Cron extends CI_Controller {
         }
     }
 
+//Youtube Video data: http://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=TYYW_WwYHuM&format=json
+//check_yt_exists(TYYW_WwYHuM)
 }
