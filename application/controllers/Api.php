@@ -5,6 +5,7 @@
  * Date: 2016.01.16.
  * Time: 13:40
  */
+define('_CACHETIME', 12);
 
 class Api extends CI_Controller {
 
@@ -24,13 +25,12 @@ class Api extends CI_Controller {
 
         if($this->agent->agent_string() == ''
         && (
-                $this->input->get('cat') == 'Film/Hun/SD'//--remove @ BT v1.0.6
-            ||  $this->input->get('cat') == 'Film/Eng/SD'//--remove @ BT v1.0.6
+                $this->input->get('cat') == 'Film/Hun/SD'//--legacy BT v1.0.4
+            ||  $this->input->get('cat') == 'Film/Eng/SD'//--legacy BT v1.0.4
             ||  $this->input->get('cat') == 'Hun'
             ||  $this->input->get('cat') == 'Eng'
           ))
         {
-            $this->config->load('api');
             $this->load->helper('api_helper');
         }
         else show_404();
@@ -77,9 +77,14 @@ class Api extends CI_Controller {
         if($this->load->is_loaded(ucfirst($lib))) {
 
             // Not used atm.:
-            // &limit=50&with_rt_ratings=true&lang=hu
-            // &quality=1080p&order_by=asc
-            // Check! app/config/config.php [cache_query_string]
+            //&limit=50 # rogzitett BT beallitas; FIX
+            //&with_rt_ratings=true # nincs kuldve BT v1.0.4 ota; FIX
+            //&lang=hu # BT nyelv beallitas
+            //&quality=1080p # BT-ben a quality valto kapcsolja, beallitasokban ki van kapcsolva a mezo; 1080p az alap BT v1.0.6 ota; IGNORE
+            //&order_by=asc # van utalas a valtasra PT helpben (dblclick a filteren), de ugy tunik nem valthato; FIX
+
+            // FONTOS! Cache miatt, minden új elemet fel kell venni ami megváltoztatja a response-ot!!!
+            // ITT: app/config/config.php [cache_query_string]
             $this->{$lib}->parseReq($this->input->get(array(
                 'page',
                 'cat',
@@ -181,7 +186,7 @@ class Api extends CI_Controller {
                             {
                                 $M =& $db_movies[$imdb_ids[$i]];
 
-                                if ($M['locked'] >= 2)
+                                if ($M['locked'] >= 2)///stupid, stupid stoopid locked!!!
                                 {
                                     if($M['year']) $site_movies[$i]['year'] = $M['year'];
                                     if($M['title']) $site_movies[$i]['title'] = $M['title'];

@@ -24,7 +24,7 @@ class Bithu extends Scraper {
     protected $pagenum;
     protected $limit = _LIMIT;//felhasználó beállítástól függ (1-100)
 
-    protected $movie_count = 10000;//TODO
+    protected $movie_count = 10000;//TODO: pager div utolsó elemének utolsó száma
     protected $movies;
     protected $torrent_ids;
     protected $imdb_ids;
@@ -237,14 +237,12 @@ class Bithu extends Scraper {
              || stripos($title_long, '.x264-'))
             {
                 $quality = '1080p';
-                $quality = '720p';//TODO: BR v1.0.6 után megfordítani (alap quality 1080p)
             }
             else
             #if( stripos($title_long, '.xvid.')
             # || stripos($title_long, '.xvid-'))
             {
                 $quality = '720p';
-                $quality = '1080p';//TODO: BR v1.0.6 után megfordítani (alap quality 1080p)
             }
 
             // KIZÁRÁSOK
@@ -260,7 +258,7 @@ class Bithu extends Scraper {
 
                 if(
                     (
-                       ($filenum <= 50  && $size_bytes > 2147483648 )//2GB
+                       ($filenum <= 50  && $size_bytes > 2147483648 )//2GB //itt azert rezeg a lec TODO: ha tárolva lesz, lekérni a gyanús fájlszámú / méretű torrenteket
                     || ($filenum <= 100 && $size_bytes > 10737418240)//10GB
                     || ($filenum <= 200 && $size_bytes > 21474836480)//20GB
                     )
@@ -308,7 +306,7 @@ class Bithu extends Scraper {
                 'size_bytes' => (string)$size_bytes,
                 'date_uploaded' => $date,
                 'date_uploaded_unix' => $date_unix
-                //TODO: torrent_id-t rögzíteni itt, és Api cont.-ben kiiktatni a felülírást
+                //TODO: torrent_id-t rögzíteni itt, és Api controllerben kiiktatni a felülírást
             );
 
             $MOVIE = array(

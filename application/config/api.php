@@ -6,6 +6,4 @@
  * Time: 14:07
  */
 
-define('_CACHETIME', 12);
-
-$config['kukorica'] = '1.0.5';
+$config['kukorica'] = '1.0.6';
