@@ -230,7 +230,7 @@ class Cron extends CI_Controller {
 
                     //TODO: genres
                     $movie_data = array(
-                        'locked' => $locked,
+                        'locked' => $locked,//stuupid thang!
                         'background_image' => $img_config['base_url'] . $img_config['backdrop_sizes'][2] . $movie->getBackdrop(),
                         'synopsis' => $movie->get('overview'),
                         'year' => strstr($movie->get('release_date'), '-', true),
@@ -238,8 +238,10 @@ class Cron extends CI_Controller {
                         'medium_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][3] . $movie->getPoster(),
                         'large_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][5] . $movie->getPoster(),
                         'title' => $movie->getTitle(),
-                        //'rating' => $movie->get('vote_average')
+                        //'rating' => $movie->get('vote_average'),//csak akkor, ha legit IMDB
+                        // vote_count (int)
                         'yt_trailer_code' => $movie->getTrailer()
+                        //get('genre_ids') [3, 22, 14]
                     );
 
                     $this->kukorica->update_movie($imdb_id, $movie_data);
