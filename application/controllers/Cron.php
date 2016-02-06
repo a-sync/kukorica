@@ -256,7 +256,6 @@ class Cron extends CI_Controller {
                 //clear_all_cache();
             }
         }
-
     }
     
     private function go_sleep(&$timer, &$ac)
@@ -275,4 +274,11 @@ class Cron extends CI_Controller {
 
 //Youtube Video data: http://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=TYYW_WwYHuM&format=json
 //check_yt_exists(TYYW_WwYHuM)
+
+//IMDB data api: http://p.media-imdb.com/static-content/documents/v1/title/tt0258463/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json?u=ur900000000&s=p3
+
+//alter1: http://www.myapifilms.com/imdb.do
+
+//alter2: http://www.omdbapi.com/?i=tt3659388&plot=full&r=json
+
 }
