@@ -197,7 +197,7 @@ class Api extends CI_Controller {
                                     if($M['medium_cover_image']) $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
                                     if($M['large_cover_image']) $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];
 
-                                    if($M['rating']) $site_movies[$i]['rating'] = round($M['rating'],2);
+                                    if($M['rating']) $site_movies[$i]['rating'] = round($M['rating'], 2);
                                     if($M['yt_trailer_code']) $site_movies[$i]['yt_trailer_code'] = $M['yt_trailer_code'];
                                 }
                             }

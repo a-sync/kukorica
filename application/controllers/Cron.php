@@ -26,6 +26,8 @@ class Cron extends CI_Controller {
             {
                 case 'elozetesek':
                     break;
+                case 'imdb':
+                    break;
                 #case 'tmdb':
                 default:
                     require_once( APPPATH . 'third_party/tmdb/tmdb-api.php' );
@@ -48,6 +50,9 @@ class Cron extends CI_Controller {
                 case 'elozetesek':
                     $this->elozetesek_google_scrape();
                     break;
+                case 'imdb':
+                    $this->imdb_meta();
+                    break;
                 #case 'tmdb':
                 default:
                     $this->tmdb_scrape();
@@ -64,6 +69,78 @@ class Cron extends CI_Controller {
     private function o($str)
     {
         $this->cron_output[] = '['.str_pad(microtime(true), 15, '0', STR_PAD_RIGHT).'] '.$str;
+        return $this;
+    }
+
+    private function imdb_meta()
+    {
+        $this->load->model('kukorica');
+        $this->load->helper('api_helper');
+
+        $movies = $this->kukorica->get_locked_movies_without_rating(1);
+
+        if(count($movies) > 0)
+        {
+            //$ur = '011'.str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
+            $ur = '011'.substr((string) time(), 1, 5);
+
+            log_message('debug', 'imdb_meta start. movies.length = '.count($movies));
+            $this->o('elozetesek start. ur = '.$ur.' movies.length = '.count($movies)."\r\n");
+
+            foreach($movies as $m) {
+                $imdb_id = 'tt' . str_pad($m['imdb_id'], 7, '0', STR_PAD_LEFT);
+                $this->o($m['year'].' '.$m['title']);
+
+                $u = 'http://p.media-imdb.com/static-content/documents/v1/title/'
+                    .$imdb_id
+                    .'/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json?'
+                    .'u=ur'.$ur.'&s=p3';
+                $this->o('call & decode: '.$u);
+
+                $imdb_resp = scrape_url($u);
+
+                $imdb_rating = 0;
+                $imdb_year = $m['year'];
+
+                if(strpos($imdb_resp, 'imdb.rating.run(') === 0)
+                {
+                    $imdb_json = substr($imdb_resp, 16, -1);
+                    //$this->o('imdb json: '.$imdb_json);
+
+                    $resp = json_decode($imdb_json, TRUE);
+                    $this->o('$resp = <br/><pre style="color:#fefefe;background:linear-gradient(rgba(0,0,0,1),rgba(0,0,0,0.8));padding:8px">'.print_r($resp, true).'</pre>');
+
+                    if(isset($resp['resource']))
+                    {
+                        $reso = $resp['resource'];
+                        if($reso['canRate'])
+                        {
+                            $imdb_year = $reso['year'];
+                            $imdb_rating = $reso['rating'];
+                            $this->o('<b>'.$imdb_rating.'</b> ('.$reso['ratingCount'].' szavazat)');
+                        }
+                        else $this->o(' ! $resp[resource][canRate] ');
+                    }
+                    else $this->o(' ! isset($resp[resource]) ');
+                }
+                else $this->o('Érvénytelen imdb plugin api válasz (' . $imdb_id . '): ' . $u . '<br/><pre style="color:#fefefe;background:#020202;padding:5px">'.$imdb_resp.'</pre>');
+
+                $this->kukorica->update_movie($m['imdb_id'], array('year' => $imdb_year, 'rating' => $imdb_rating));//poke
+
+                if(count($movies) > 1) {
+                    $r = rand(2, 5);//igy talan nem blokkol egybol
+                    $this->o('sleep: ' . $r);
+                    sleep($r);
+                    $this->o('continue.' . "\r\n");
+                }
+            }
+            log_message('debug', 'imdb_meta finish.');
+            $this->o('imdb_meta finish. ');
+        }
+        else
+        {
+            $this->o('movies.length = 0');
+        }
     }
 
     private function elozetesek_google_scrape()
@@ -146,7 +223,7 @@ class Cron extends CI_Controller {
                     $locked = 4;
                 }
 
-                $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code, 'locked'=>$locked));
+                $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code, 'locked'=>$locked));//poke
 
                 $r = rand(2,5);//igy talan nem blokkol egybol
                 $this->o('sleep: '.$r);
@@ -154,8 +231,11 @@ class Cron extends CI_Controller {
                 $this->o('continue.'."\r\n");
             }
             log_message('debug', 'elozetesek finish.');
-
             $this->o('elozetesek finish. ');
+        }
+        else
+        {
+            $this->o('movies.length = 0');
         }
     }
 
@@ -238,8 +318,8 @@ class Cron extends CI_Controller {
                         'medium_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][3] . $movie->getPoster(),
                         'large_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][5] . $movie->getPoster(),
                         'title' => $movie->getTitle(),
-                        //'rating' => $movie->get('vote_average'),//csak akkor, ha legit IMDB
-                        // vote_count (int)
+                        //'rating' => $movie->get('vote_average'),//tmdb saját rating értéke
+                        // vote_count (int) // -||-
                         'yt_trailer_code' => $movie->getTrailer()
                         //get('genre_ids') [3, 22, 14]
                     );

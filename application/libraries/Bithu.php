@@ -204,7 +204,8 @@ class Bithu extends Scraper {
                 } elseif (strpos($href, 'imdb.com/title/') !== false) {
                     $tmp = substr($href, strpos($href, 'imdb.com/title/') + 15);
                     $imdb_id = strstr($tmp, '/', true);
-                    $imdb_rating = floatval(str_replace(array('[imdb: ', ']'), '', $link->textContent));
+                    $imdb_rating = str_replace(array('[imdb: ', ']'), '', $link->textContent);
+                    $imdb_rating = floatval($imdb_rating);
                 } elseif ($link->hasAttribute('alt') && $link->getAttribute('alt') == 'info') {
                     $info_url = str_replace('http://anonym.to/?', '', $href);
                     if ($link->hasAttribute('onmouseover')) {
