@@ -5,7 +5,8 @@
  * Date: 2016.01.18.
  * Time: 16:11
  */
-# */5 * * * * wget -O /dev/null http://bigfathead.eu/kukorica/cron
+# */6 * * * * wget -O /dev/null http://bigfathead.eu/kukorica/cron/tmdb
+# 10 */1 * * * wget -O /dev/null http://bigfathead.eu/kukorica/cron/imdb
 
 class Cron extends CI_Controller {
     private $tmdb_api_key = '4a1fe498a141725bb546cc9fd0a1a9e9';
@@ -28,9 +29,11 @@ class Cron extends CI_Controller {
                     break;
                 case 'imdb':
                     break;
-                #case 'tmdb':
-                default:
+                case 'tmdb':
                     require_once( APPPATH . 'third_party/tmdb/tmdb-api.php' );
+                    break;
+                default:
+                    show_404();
             }
         }
         else show_404();
@@ -53,9 +56,9 @@ class Cron extends CI_Controller {
                 case 'imdb':
                     $this->imdb_meta();
                     break;
-                #case 'tmdb':
-                default:
+                case 'tmdb':
                     $this->tmdb_scrape();
+                    break;
             }
 
             if(count($this->cron_output) > 0) $this->load->view('cron', array('output'=>$this->cron_output));
