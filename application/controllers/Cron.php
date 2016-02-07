@@ -125,7 +125,7 @@ class Cron extends CI_Controller {
                 }
                 else $this->o('Érvénytelen imdb plugin api válasz (' . $imdb_id . '): ' . $u . '<br/><pre style="color:#fefefe;background:#020202;padding:5px">'.$imdb_resp.'</pre>');
 
-                $this->kukorica->update_movie($m['imdb_id'], array('year' => $imdb_year, 'rating' => $imdb_rating));//poke
+                $this->kukorica->update_movie($m['imdb_id'], array('year' => $imdb_year, 'rating' => $imdb_rating, 'updated'=>now()));//poke
 
                 if(count($movies) > 1) {
                     $r = rand(2, 5);//igy talan nem blokkol egybol
@@ -223,7 +223,7 @@ class Cron extends CI_Controller {
                     $locked = 4;
                 }
 
-                $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code, 'locked'=>$locked));//poke
+                $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code, 'locked'=>$locked, 'updated'=>now()));//poke
 
                 $r = rand(2,5);//igy talan nem blokkol egybol
                 $this->o('sleep: '.$r);
@@ -311,18 +311,21 @@ class Cron extends CI_Controller {
                     //TODO: genres
                     $movie_data = array(
                         'locked' => $locked,//stuupid thang!
-                        'background_image' => $img_config['base_url'] . $img_config['backdrop_sizes'][2] . $movie->getBackdrop(),
                         'synopsis' => $movie->get('overview'),
                         'year' => strstr($movie->get('release_date'), '-', true),
-                        'small_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][2] . $movie->getPoster(),
-                        'medium_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][3] . $movie->getPoster(),
-                        'large_cover_image' => $img_config['base_url'] . $img_config['poster_sizes'][5] . $movie->getPoster(),
                         'title' => $movie->getTitle(),
                         //'rating' => $movie->get('vote_average'),//tmdb saját rating értéke
                         // vote_count (int) // -||-
                         'yt_trailer_code' => $movie->getTrailer()
                         //get('genre_ids') [3, 22, 14]
                     );
+
+                    if($movie->getBackdrop()) $movie_data['background_image'] = $img_config['base_url'] . $img_config['backdrop_sizes'][2] . $movie->getBackdrop();
+                    if($movie->getPoster()) {
+                        $movie_data['small_cover_image'] = $img_config['base_url'] . $img_config['poster_sizes'][2] . $movie->getPoster();
+                        $movie_data['medium_cover_image'] = $img_config['base_url'] . $img_config['poster_sizes'][3] . $movie->getPoster();
+                        $movie_data['large_cover_image'] = $img_config['base_url'] . $img_config['poster_sizes'][5] . $movie->getPoster();
+                    }
 
                     $this->kukorica->update_movie($imdb_id, $movie_data);
                     $updated_some = true;

@@ -212,17 +212,17 @@ class Kukorica extends CI_Model {
         return $data;
     }
 
-    /*
     public function poke_movie($imdb_id) //TODO: Y U NO WORK?
     {
         $imdb_id = intval(trim($imdb_id, 't'));
         if($imdb_id) {
             return $this->db
                 ->where('imdb_id', $imdb_id)
-                ->update('movies', array('updated'=>'NOW()'));
+                ->set('updated', 'NOW()', FALSE)
+                ->update('movies');
+                //->update('movies', array('updated'=>now()));
         }
 
         return FALSE;
     }
-    */
 }
