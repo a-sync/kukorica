@@ -76,7 +76,6 @@ class Cron extends CI_Controller {
     {
         $this->load->model('kukorica');
         $this->load->helper('api_helper');
-        $this->load->helper('date_helper');
 
         $movies = $this->kukorica->get_locked_movies_without_rating(10);
 
@@ -126,7 +125,7 @@ class Cron extends CI_Controller {
                 }
                 else $this->o('Érvénytelen imdb plugin api válasz (' . $imdb_id . '): ' . $u . '<br/><pre style="color:#fefefe;background:#020202;padding:5px">'.$imdb_resp.'</pre>');
 
-                $this->kukorica->update_movie($m['imdb_id'], array('year' => $imdb_year, 'rating' => $imdb_rating, 'updated'=>now()));//poke
+                $this->kukorica->update_movie($m['imdb_id'], array('year' => $imdb_year, 'rating' => $imdb_rating));
 
                 if(count($movies) > 1) {
                     $r = rand(2, 5);//igy talan nem blokkol egybol
@@ -148,7 +147,6 @@ class Cron extends CI_Controller {
     {
         $this->load->model('kukorica');
         $this->load->helper('api_helper');
-        $this->load->helper('date_helper');
 
         $movies = $this->kukorica->get_locked_movies_without_trailer(10);
 
@@ -225,7 +223,7 @@ class Cron extends CI_Controller {
                     $locked = 4;
                 }
 
-                $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code, 'locked'=>$locked, 'updated'=>now()));//poke
+                $this->kukorica->update_movie($m['imdb_id'], array('yt_trailer_code' => $yt_trailer_code, 'locked'=>$locked));
 
                 $r = rand(2,5);//igy talan nem blokkol egybol
                 $this->o('sleep: '.$r);

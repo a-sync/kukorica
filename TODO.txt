@@ -1,12 +1,11 @@
 TODO:
-    * film/eng/sd kukázása
-    * poke_movie fix XOR kuka
     * torrent_id-t átvezetni a torrent data modelbe
     
       torrentfile-hoz info: nyelv/hu-en,NULL, cat?
       genre listet imdb / bithu alapján helyretenni
 
-      locked opció helyett státusz flagelés
+      locked opció helyett státusz flagelés; HELYETT: cron history
+
       api altal lekert/kuldott adatok matchelese a PT-vel (movie model)
       title_long movie helyett torrenthez menjen: filename
 
@@ -17,6 +16,7 @@ TODO:
 CRON:
 * tmdb/omdb keresés az ismeretlen filmek esetén
 * omdb scraper a frissítésekhez
+* külön táblába kerüljön a film adatfrissítési történet / státuszok (pl. trailer, van/nincs eng/hun; rating van/nincs, brefissítve XY-kor)
 
 WEB:
 **admin/movies/tt00000000 aloldal basic jQuery google ajax search trailerhez + mozi adatlap + torrentek /adatok

@@ -188,10 +188,13 @@ class Kukorica extends CI_Model {
         return $query->result_array();
     }
 
-    public function update_movie($imdb_id, $data)
+    //TODO: külön táblába a különböző adatfrissítéseket, $force_poke = false
+    public function update_movie($imdb_id, $data, $force_poke = true)
     {
         $imdb_id = intval(trim($imdb_id, 't'));
         if($imdb_id) {
+            if($force_poke) $this->db->set('updated', 'NOW()', FALSE);
+
             return $this->db
                 ->where('imdb_id', $imdb_id)
                 ->update('movies', $data);
@@ -212,15 +215,15 @@ class Kukorica extends CI_Model {
         return $data;
     }
 
-    public function poke_movie($imdb_id) //TODO: Y U NO WORK?
+    public function poke_movie($imdb_id)
     {
         $imdb_id = intval(trim($imdb_id, 't'));
         if($imdb_id) {
             return $this->db
                 ->where('imdb_id', $imdb_id)
+                //->set('updated', NULL)
                 ->set('updated', 'NOW()', FALSE)
                 ->update('movies');
-                //->update('movies', array('updated'=>now()));
         }
 
         return FALSE;
