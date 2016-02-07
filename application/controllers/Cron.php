@@ -123,7 +123,7 @@ class Cron extends CI_Controller {
                             else $this->o(' ! $resp[resource][canRate] ');
                         }
                         else {
-                            $this->o('<b style="color:#800">HIBA: '.$imdb_id.' = '.$reso['titleType']);
+                            $this->o('<b style="color:#800">HIBA: '.$imdb_id.' = '.$reso['titleType'].'</b>');
                             log_message('error', $imdb_id.' = '.$reso['titleType']);
                         }
                     }
