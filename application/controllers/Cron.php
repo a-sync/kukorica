@@ -77,7 +77,7 @@ class Cron extends CI_Controller {
         $this->load->model('kukorica');
         $this->load->helper('api_helper');
 
-        $movies = $this->kukorica->get_locked_movies_without_rating(1);
+        $movies = $this->kukorica->get_locked_movies_without_rating(10);
 
         if(count($movies) > 0)
         {
