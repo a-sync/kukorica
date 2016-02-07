@@ -113,19 +113,13 @@ class Cron extends CI_Controller {
                     if(isset($resp['resource']))
                     {
                         $reso = $resp['resource'];
-                        if($reso['titleType'] == 'movie') {
-                            if ($reso['canRate']) {
-                                $imdb_year = $reso['year'];
-                                $imdb_rating = $reso['rating'];
-                                $this->o($imdb_year.' '.$reso['title'])
-                                     ->o('<b>'.$imdb_rating.'</b> ('.$reso['ratingCount'].' szavazat)');
-                            }
-                            else $this->o(' ! $resp[resource][canRate] ');
+                        if ($reso['canRate'] && isset($reso['year']) && isset($reso['rating'])) {
+                            $imdb_year = $reso['year'];
+                            $imdb_rating = $reso['rating'];
+                            $this->o($imdb_year.' '.$reso['title'])
+                                 ->o('<b>'.$imdb_rating.'</b> ('.$reso['ratingCount'].' szavazat)');
                         }
-                        else {
-                            $this->o('<b style="color:#800">HIBA: '.$imdb_id.' = '.$reso['titleType'].'</b>');
-                            log_message('error', $imdb_id.' = '.$reso['titleType']);
-                        }
+                        else $this->o(' ! $reso[canRate] OR ! $reso[year] OR ! $reso[rating] ');
                     }
                     else $this->o(' ! isset($resp[resource]) ');
                 }
