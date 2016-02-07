@@ -180,7 +180,7 @@ class Kukorica extends CI_Model {
             ->from('movies')
             ->where_in('locked', 2)
             ->where('rating', 0)
-            ->order_by('updated', 'DESC')
+            ->order_by('updated', 'ASC')
             ->limit($limit)
             ->get()
         ;
