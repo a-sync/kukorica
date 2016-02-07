@@ -85,7 +85,7 @@ class Cron extends CI_Controller {
             $ur = '011'.substr((string) time(), 1, 5);
 
             log_message('debug', 'imdb_meta start. movies.length = '.count($movies));
-            $this->o('elozetesek start. ur = '.$ur.' movies.length = '.count($movies)."\r\n");
+            $this->o('elozetesek start. ur = '.$ur.' movies.length = '.count($movies).'<br/>');
 
             foreach($movies as $m) {
                 $imdb_id = 'tt' . str_pad($m['imdb_id'], 7, '0', STR_PAD_LEFT);
@@ -95,7 +95,7 @@ class Cron extends CI_Controller {
                     .$imdb_id
                     .'/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json?'
                     .'u=ur'.$ur.'&s=p3';
-                $this->o('call & decode: '.$u);
+                //$this->o('call & decode: '.$u);
 
                 $imdb_resp = scrape_url($u);
 
@@ -113,13 +113,19 @@ class Cron extends CI_Controller {
                     if(isset($resp['resource']))
                     {
                         $reso = $resp['resource'];
-                        if($reso['canRate'])
-                        {
-                            $imdb_year = $reso['year'];
-                            $imdb_rating = $reso['rating'];
-                            $this->o('<b>'.$imdb_rating.'</b> ('.$reso['ratingCount'].' szavazat)');
+                        if($reso['titleType'] == 'movie') {
+                            if ($reso['canRate']) {
+                                $imdb_year = $reso['year'];
+                                $imdb_rating = $reso['rating'];
+                                $this->o($imdb_year.' '.$reso['title'])
+                                     ->o('<b>'.$imdb_rating.'</b> ('.$reso['ratingCount'].' szavazat)');
+                            }
+                            else $this->o(' ! $resp[resource][canRate] ');
                         }
-                        else $this->o(' ! $resp[resource][canRate] ');
+                        else {
+                            $this->o('<b style="color:#800">HIBA: '.$imdb_id.' = '.$reso['titleType']);
+                            log_message('error', $imdb_id.' = '.$reso['titleType']);
+                        }
                     }
                     else $this->o(' ! isset($resp[resource]) ');
                 }
@@ -131,7 +137,7 @@ class Cron extends CI_Controller {
                     $r = rand(2, 5);//igy talan nem blokkol egybol
                     $this->o('sleep: ' . $r);
                     sleep($r);
-                    $this->o('continue.' . "\r\n");
+                    $this->o('continue.<br/>');
                 }
             }
             log_message('debug', 'imdb_meta finish.');
@@ -228,7 +234,7 @@ class Cron extends CI_Controller {
                 $r = rand(2,5);//igy talan nem blokkol egybol
                 $this->o('sleep: '.$r);
                 sleep($r);
-                $this->o('continue.'."\r\n");
+                $this->o('continue.<br/>');
             }
             log_message('debug', 'elozetesek finish.');
             $this->o('elozetesek finish. ');
