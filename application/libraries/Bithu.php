@@ -46,6 +46,7 @@ class Bithu extends Scraper {
         return 'uid='._UID.'; pass='._PASS;
     }
 
+    //TODO: <input type="hidden" value="589f7" name="vxx"> előző küldése
     public function parseReq($INPUT)
     {
         if(is_numeric($INPUT['page'])){
@@ -55,10 +56,29 @@ class Bithu extends Scraper {
         }
 
         $params = array(
-            'cat' => (strpos($INPUT['cat'], 'Eng') !== false)?'19':'23',#19:Film/Eng/SD #23:Film/Hun/SD;
             'page' => $this->pagenum - 1,
             'd' => 'DESC'//order_by=asc
         );
+
+        switch($INPUT['cat'])
+        {
+            case 'Sorozat/Eng/SD':
+                $params['cat'] = '26';
+                break;
+            case 'Sorozat/Hun/SD':
+                $params['cat'] = '7';
+                break;
+            case 'Film/Eng/SD':
+            case 'Eng':
+                $params['cat'] = '19';
+                break;
+            /*case 'Film/Hun/SD':
+            case 'Hun':
+                $params['cat'] = '23';
+                break;*/
+            default:
+                $params['cat'] = '23';
+        }
 
         switch($INPUT['sort_by'])
         {
@@ -122,6 +142,7 @@ class Bithu extends Scraper {
         return $this;
     }
 
+    //TODO: <input type="hidden" value="589f7" name="vxx"> berögzítése
     public function loadContent($SCRAPED_DATA)
     {
         $dom = new DOMDocument;

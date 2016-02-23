@@ -27,6 +27,8 @@ class Api extends CI_Controller {
         && (
                 $this->input->get('cat') == 'Film/Hun/SD'//--legacy BT v1.0.4
             ||  $this->input->get('cat') == 'Film/Eng/SD'//--legacy BT v1.0.4
+            ||  $this->input->get('cat') == 'Sorozat/Hun/SD'
+            ||  $this->input->get('cat') == 'Sorozat/Eng/SD'
             ||  $this->input->get('cat') == 'Hun'
             ||  $this->input->get('cat') == 'Eng'
           ))
