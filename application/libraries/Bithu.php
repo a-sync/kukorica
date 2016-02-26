@@ -29,6 +29,8 @@ class Bithu extends Scraper {
     protected $torrent_ids;
     protected $imdb_ids;
 
+    private $col_mod = 0;
+
     protected function getParams($key = FALSE)
     {
         if($key !== FALSE) return $this->params[$key];
@@ -89,6 +91,7 @@ class Bithu extends Scraper {
                 break;
             case 'trending': # legaktívabbak
                 $params['sort'] = 'activity';
+                $this->col_mod = 1;
                 break;
             case 'seeds': # seedek
                 $params['sort'] = 'seeders';
@@ -239,17 +242,17 @@ class Bithu extends Scraper {
                 }
             }
 
-            $filenum = intval($cols->item(2)->textContent);
+            $filenum = intval($cols->item(2+$this->col_mod)->textContent);
 
-            $date_unix = $this->parse_date($cols->item(4)->textContent);
+            $date_unix = $this->parse_date($cols->item(4+$this->col_mod)->textContent);
             $date = date('Y-m-d H:i:s', $date_unix);
 
-            $size_values = $this->parse_size($cols->item(5)->textContent);
+            $size_values = $this->parse_size($cols->item(5+$this->col_mod)->textContent);
             $size = $size_values['text'];
             $size_bytes = $size_values['bytes'];
 
-            $seeds = intval(trim($cols->item(7)->textContent));
-            $peers = explode(' / ', $cols->item(8)->textContent);
+            $seeds = intval(trim($cols->item(7+$this->col_mod)->textContent));
+            $peers = explode(' / ', $cols->item(8+$this->col_mod)->textContent);
             $peers = intval($peers[1]);
 
             $title_cut = explode('-', $title_long);
