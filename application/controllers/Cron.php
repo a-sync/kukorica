@@ -111,12 +111,12 @@ class Cron extends CI_Controller {
                     //$this->o('imdb json: '.$imdb_json);
 
                     $resp = json_decode($imdb_json, TRUE);
-                    $this->o('$resp = <br/><pre style="color:#fefefe;background:linear-gradient(rgba(0,0,0,1),rgba(0,0,0,0.8));padding:8px">'.print_r($resp, true).'</pre>');
+                    $this->o('$resp = <br/><pre>'.print_r($resp, true).'</pre>');
 
                     if(isset($resp['resource']))
                     {
                         $reso = $resp['resource'];
-                        if ($reso['canRate'] && isset($reso['year']) && isset($reso['rating'])) {
+                        if (isset($reso['canRate']) && $reso['canRate'] && isset($reso['year']) && isset($reso['rating'])) {
                             $imdb_year = $reso['year'];
                             $imdb_rating = $reso['rating'];
                             $this->o($imdb_year.' '.$reso['title'])
@@ -251,6 +251,7 @@ class Cron extends CI_Controller {
 
         if (count($movie_ids) > 0) {
             log_message('info', 'cron started for ' . count($movie_ids) . ' item @ ' . date('H:i:s'));
+            $this->o('$movie_ids.length = '.count($movie_ids));
 
             //TODO: imdb keresés angol, utána tmdb id lekérés magyar beállítással menjen
             //TODO: magyar adatok írják felül amit lehet
@@ -273,10 +274,12 @@ class Cron extends CI_Controller {
                 if ($movie === FALSE || $tmdb->getLastHttpCode() >= 400) //érvénytelen válasz
                 {
                     log_message('error', 'cron error: '.$tmdb->getLastHttpCode().' > 400');
+                    $this->o('cron error: '.$tmdb->getLastHttpCode().' > 400');
                 }
                 elseif ($movie === TRUE) //nem található film ezzel az id-vel
                 {
                     log_message('error', 'cron error: $movie === true @ '.$imdb_id);
+                    $this->o('cron error: $movie === true @ '.$imdb_id);
                     $this->kukorica->update_movie($imdb_id, array('locked' => 1));
                 }
                 else {
@@ -332,6 +335,7 @@ class Cron extends CI_Controller {
 
                     $this->kukorica->update_movie($imdb_id, $movie_data);
                     $updated_some = true;
+                    $this->o($imdb_id.' updated. (locked: '.$locked.')');
                 }
             }
 
@@ -342,6 +346,7 @@ class Cron extends CI_Controller {
                 //clear_all_cache();
             }
         }
+        else $this->o('$movie_ids.length = 0');
     }
     
     private function go_sleep(&$timer, &$ac)

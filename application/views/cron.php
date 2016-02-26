@@ -10,6 +10,14 @@
 
 echo '<html><head><meta charset="utf-8"></head><body>';
 
-echo (count($output > 0)) ? implode("<br/>", $output) : 'No output.';
+if(count($output > 0))
+{
+    $pre_replace = '<pre style="color:#fefefe;background:linear-gradient(rgba(0,0,0,1),rgba(0,0,0,0.8));padding:8px">';
+    foreach($output as $i => $o) {
+        echo str_replace('<pre>', $pre_replace, $o)
+            .'<br/>';
+    }
+}
+else echo('No output.');
 
 echo '</body></html>';
