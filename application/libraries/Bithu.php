@@ -87,7 +87,9 @@ class Bithu extends Scraper {
             case 'download_count': # megtekintések
                 $params['sort'] = 'times_completed';
                 break;
-            case 'trending':
+            case 'trending': # legaktívabbak
+                $params['sort'] = 'activity';
+                break;
             case 'seeds': # seedek
                 $params['sort'] = 'seeders';
                 break;

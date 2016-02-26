@@ -25,10 +25,10 @@ class Api extends CI_Controller {
 
         if($this->agent->agent_string() == ''
         && (
-                $this->input->get('cat') == 'Film/Hun/SD'//--legacy BT v1.0.4
-            ||  $this->input->get('cat') == 'Film/Eng/SD'//--legacy BT v1.0.4
-            ||  $this->input->get('cat') == 'Sorozat/Hun/SD'
-            ||  $this->input->get('cat') == 'Sorozat/Eng/SD'
+                $this->input->get('cat') == 'Film/Hun/SD'//--BT v1.0.4/1.0.8a
+            ||  $this->input->get('cat') == 'Film/Eng/SD'//--BT v1.0.4/1.0.8a
+            ||  $this->input->get('cat') == 'Sorozat/Hun/SD'//--BT v1.0.8a
+            ||  $this->input->get('cat') == 'Sorozat/Eng/SD'//--BT v1.0.8a
             ||  $this->input->get('cat') == 'Hun'
             ||  $this->input->get('cat') == 'Eng'
           ))
