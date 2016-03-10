@@ -150,6 +150,8 @@ class Bithu extends Scraper {
     //TODO: <input type="hidden" value="589f7" name="vxx"> berögzítése
     public function loadContent($SCRAPED_DATA)
     {
+        $SCRAPED_DATA = mb_convert_encoding($SCRAPED_DATA, 'HTML-ENTITIES', 'ISO-8859-2');
+
         $dom = new DOMDocument;
         $dom->strictErrorChecking = FALSE;
         //$dom->validateOnParse = true;
