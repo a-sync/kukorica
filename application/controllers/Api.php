@@ -199,7 +199,8 @@ class Api extends CI_Controller {
 
                                     if($M['background_image']) $site_movies[$i]['background_image'] = $M['background_image'];
                                     if($M['small_cover_image']) $site_movies[$i]['small_cover_image'] = $M['small_cover_image'];
-                                    if($site_movies[$i]['medium_cover_image'] == '' && $M['medium_cover_image']) {
+                                    if(//$site_movies[$i]['medium_cover_image'] == '' && //eleg sok kep nem tolt be :/ (503/521)
+                                        $M['medium_cover_image']) {
                                         $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
                                     }
                                     if($M['large_cover_image']) $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];

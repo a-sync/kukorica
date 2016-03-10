@@ -202,7 +202,7 @@ class Bithu extends Scraper {
             $genres = array();
             $small_cover_image = '';
             $medium_cover_image = '';
-
+            //                       NON-BREAKING SPACE
             $tmp_title = str_replace(chr(0xC2).chr(0xA0), ' ', $cols->item(1)->getElementsByTagName('div')->item(0)->textContent);
             $tmp_pos = strrpos($tmp_title, '[');
             if($tmp_pos !== false) $tmp_title = trim(substr($tmp_title, 0, $tmp_pos));
