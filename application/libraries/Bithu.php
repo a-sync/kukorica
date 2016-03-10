@@ -221,11 +221,11 @@ class Bithu extends Scraper {
                 if ($j == 0) {
                     $id = intval(substr($href, 15));
                     $title_long = $link->textContent;
-                    if ($title == '') {
-                        $title = explode('.', $title_long);
-                        array_pop($title);
-                        $title = implode(' ', $title);
-                        $title_slug = slugify($title);
+                    if ($title_slug == '') {
+                        $title_slug = explode('.', $title_long);
+                        array_pop($title_slug);
+                        $title_slug = implode(' ', $title_slug);
+                        $title_slug = slugify($title_slug);
                     }
                 } elseif (strpos($href, 'imdb.com/title/') !== false) {
                     $tmp = substr($href, strpos($href, 'imdb.com/title/') + 15);
@@ -256,8 +256,8 @@ class Bithu extends Scraper {
             $peers = intval($peers[1]);
 
             $title_cut = explode('-', $title_long);
-            $releaser = array_pop($title_cut);
-            $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
+            //$releaser =
+                array_pop($title_cut);
 
             $quality = '720p';
             if( stripos($title_long, '.x264.')
@@ -266,8 +266,8 @@ class Bithu extends Scraper {
                 $quality = '1080p';
             }
             else
-            #if( stripos($title_long, '.xvid.')
-            # || stripos($title_long, '.xvid-'))
+            if( stripos($title_long, '.xvid.')
+             || stripos($title_long, '.xvid-'))
             {
                 $quality = '720p';
             }
@@ -276,13 +276,14 @@ class Bithu extends Scraper {
             if($size_bytes < 52428800) continue;//50MB
             elseif($seeds == 0) continue;
 
-            $filenum_treshold = ($this->params['cat'] == '19') ? 12 : 15;//Eng = 12; Hun = 15
+            $filenum_treshold = ($this->params['cat'] == '19') ? 12 : 15;//Eng = 12db; Hun = 15db
             if($filenum >= $filenum_treshold)
             {
                 // HA:
                 //      több mint $filenum_treshold fájl
                 // AKKOR:
 
+                $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
                 if(
                     (
                        ($filenum <= 50  && $size_bytes > 2147483648 )//2GB //itt azert rezeg a lec TODO: ha tárolva lesz, lekérni a gyanús fájlszámú / méretű torrenteket
@@ -415,13 +416,15 @@ class Bithu extends Scraper {
     {
         $small = strstr(substr(strstr($str, '"'), 1), '"', true);
 
+        //imageservecdn.com pic is resized get the orig
         $lastslash = strrpos($small, '/');
         if (substr_count($small, '_', $lastslash) == 4) {
             $file = explode('_', substr($small, $lastslash + 1));
             unset($file[1]);
             unset($file[2]);
             $orig = substr($small, 0, $lastslash + 1) . implode('_', $file);
-        } else $orig = '';
+        }
+        else $orig = '';
 
         return array('small' => $small, 'orig' => $orig);
     }
