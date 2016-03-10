@@ -132,7 +132,7 @@ class Api extends CI_Controller {
 
         $db_torrents = $this->kukorica->get_torrents_by_ids($torrent_ids);
         $db_movies = $this->kukorica->get_movies_by_ids($imdb_ids,
-            'imdb_id,year,title,title_long,synopsis,yt_trailer_code,locked,rating,'
+            'imdb_id,year,title,synopsis,yt_trailer_code,locked,rating,'
            .'background_image,small_cover_image,medium_cover_image,large_cover_image');
 
         $new_torrents = array();
@@ -175,7 +175,7 @@ class Api extends CI_Controller {
                                 unset($qualities[ strtolower($torrent['quality']) ]);
                             }
 
-                            if (!isset($db_movies[$imdb_ids[$i]])) // ! movies
+                            if ( ! isset($db_movies[$imdb_ids[$i]])) // ! movies
                             {
                                 $movie['imdb_id'] = $imdb_ids[$i];
                                 $movie['genres'] = implode(',', $movie['genres']);
@@ -192,13 +192,8 @@ class Api extends CI_Controller {
                                 {
                                     if($M['year']) $site_movies[$i]['year'] = $M['year'];
 
-                                    if(empty($site_movies[$i]['title'])) {
-                                        if ($M['title']) $site_movies[$i]['title'] = $M['title'];
-                                        else {
-                                            $title_tmp = explode('.', $M['title_long']);
-                                            array_pop($title_tmp);
-                                            $site_movies[$i]['title'] = trim(implode(' ', $title_tmp));
-                                        }
+                                    if($site_movies[$i]['title'] == '' && $M['title']) {
+                                        $site_movies[$i]['title'] = $M['title'];
                                     }
                                     if($M['synopsis']) $site_movies[$i]['synopsis'] = $M['synopsis'];
 
@@ -251,6 +246,12 @@ class Api extends CI_Controller {
                     $new_torrents[] = $torrent;
                 }
                 //TODO: else { peers, seeds befrissítése ha rég volt updatelve }
+            }
+
+            if($site_movies[$i]['title'] == '') {
+                $title_tmp = explode('.', $site_movies[$i]['title_long']);
+                array_pop($title_tmp);
+                $site_movies[$i]['title'] = trim(implode(' ', $title_tmp));
             }
         }
 

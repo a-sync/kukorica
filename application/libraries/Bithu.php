@@ -201,6 +201,19 @@ class Bithu extends Scraper {
             $small_cover_image = '';
             $medium_cover_image = '';
 
+            $tmp_title = $cols->item(1)->getElementsByTagName('div')->item(0)->textContent;
+            $tmp_pos = strrpos($tmp_title, '[');
+            if($tmp_pos !== false) $tmp_title = trim(substr($tmp_title, 0, $tmp_pos));
+            else {
+                $tmp_pos = strrpos($tmp_title, '(');
+                if($tmp_pos !== false) $tmp_title = trim(substr($tmp_title, 0, $tmp_pos));
+            }
+
+            if($tmp_title != '') {
+                $title = $tmp_title;
+                $title_slug = slugify($tmp_title);
+            }
+
             $spans = $cols->item(1)->getElementsByTagName('span');
             foreach ($spans as $k => $span) {
                 $genre_links = $span->getElementsByTagName('a');
@@ -208,9 +221,7 @@ class Bithu extends Scraper {
                     foreach ($genre_links as $l => $genre) {
                         $genres[] = $genre->textContent;
                     }
-                } else {
-                    $title = $span->textContent;
-                    $title_slug = slugify($title);
+                    break;
                 }
             }
 
