@@ -114,6 +114,7 @@ class Kukorica extends CI_Model {
     public function save_torrent($torrent_data)
     {
         $data = $this->clean_fields($torrent_data, $this->torrents_fields);
+        $data['site_id'] = $this->site_id;
 
         return $this->db->insert('torrents', $data);
     }
@@ -122,6 +123,7 @@ class Kukorica extends CI_Model {
     {
         foreach($torrents as $i => $torrent_data) {
             $torrents[$i] = $this->clean_fields($torrent_data, $this->torrents_fields);
+            $torrents[$i]['site_id'] = $this->site_id;
         }
 
         return $this->db->insert_batch('torrents', $torrents);
@@ -198,6 +200,21 @@ class Kukorica extends CI_Model {
             return $this->db
                 ->where('imdb_id', $imdb_id)
                 ->update('movies', $data);
+        }
+
+        return FALSE;
+    }
+
+    public function update_torrent($torrent_id, $data, $force_poke = false)
+    {
+        $torrent_id = intval($torrent_id);
+        if($torrent_id) {
+            if($force_poke) $this->db->set('updated', 'NOW()', FALSE);
+
+            return $this->db
+                ->where('site_id', $this->site_id)
+                ->where('torrent_id', $torrent_id)
+                ->update('torrents', $data);
         }
 
         return FALSE;

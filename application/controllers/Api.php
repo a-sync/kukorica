@@ -136,6 +136,7 @@ class Api extends CI_Controller {
            .'background_image,small_cover_image,medium_cover_image,large_cover_image');
 
         $new_torrents = array();
+        $upd_torrents = array();
         $new_movies = array();
 
         $op_log = array();
@@ -239,16 +240,18 @@ class Api extends CI_Controller {
 
                         if(isset($site_movies[$i])) unset($site_movies[$i]);
                     }
-                }
 
-                if( ! isset( $db_torrents[ $torrent_ids[$i] ] )) { // ! torrents
-                    $torrent['site_id']     = $this->site_id;
-                    $torrent['torrent_id']  = $torrent_ids[$i];//TODO: e helyett Bithu lib adatoknál torrent_id-t rögzíteni
-                    $torrent['imdb_id']     = $imdb_ids[$i];
+                    if( ! isset( $db_torrents[ $torrent_ids[$i] ] )) {
+                        $torrent['torrent_id']  = $torrent_ids[$i];//TODO: e helyett Bithu lib adatoknál torrent_id-t rögzíteni
+                        $torrent['imdb_id']     = $imdb_ids[$i];
 
-                    $new_torrents[] = $torrent;
+                        $new_torrents[] = $torrent;
+                    }
+                    #else if($db_torrents[ $torrent_ids[$i] ]['imdb_id'] == 0) {
+                    #    $upd_torrents[ $torrent_ids[$i] ] = array('imdb_id' => $imdb_ids[$i]);
+                    #}
+                    //TODO: else { peers, seeds befrissítése ha rég volt updatelve }
                 }
-                //TODO: else { peers, seeds befrissítése ha rég volt updatelve }
             }
 
             if($site_movies[$i]['title'] == '') {
@@ -259,6 +262,7 @@ class Api extends CI_Controller {
         }
 
         if(count($new_torrents) > 0) $this->kukorica->save_torrents($new_torrents);
+        if(count($upd_torrents) > 0) foreach($upd_torrents as $tid => $data) { $this->kukorica->update_torrent($tid, $data); }
         if(count($new_movies) > 0) $this->kukorica->save_movies($new_movies);
 
         return $site_movies;
