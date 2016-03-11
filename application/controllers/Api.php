@@ -254,7 +254,7 @@ class Api extends CI_Controller {
                 }
             }
 
-            if($site_movies[$i]['title'] == '') {
+            if(isset($site_movies[$i]) && $site_movies[$i]['title'] == '') {
                 $title_tmp = explode('.', $site_movies[$i]['title_long']);
                 array_pop($title_tmp);
                 $site_movies[$i]['title'] = trim(implode(' ', $title_tmp));
