@@ -87,9 +87,12 @@ class Api extends CI_Controller {
 
             // FONTOS! Cache miatt, minden új elemet fel kell venni ami megváltoztatja a response-ot!!!
             // ITT: app/config/config.php [cache_query_string]
+            // protip: eleve abbol a konfigbol jojjon a lista
             $this->{$lib}->parseReq($this->input->get(array(
-                'page',
+            #/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=25&lang=hu&cat=Eng
+            #/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&lang=hu&cat=Eng
                 'cat',
+                'page',
                 'sort_by',
                 'genre',
                 'query_term'
@@ -155,6 +158,7 @@ class Api extends CI_Controller {
 
                 if($imdb_ids[$i] == 0) {
                     //TODO: fake imdb_code ha lehetséges, h megjelenjen mindenféleképpen
+                    //PROTIP: 1 000 000 000 tartomanyban is lehetnek id-k
                 }
                 else
                 {
