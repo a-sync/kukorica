@@ -266,7 +266,7 @@ class Cron extends CI_Controller {
                 $imdb_id = 'tt' . str_pad($movie_id['imdb_id'], 7, '0', STR_PAD_LEFT);
 
                 if ($ac >= $this->tmdb_call_limit) {
-                    $this->go_sleep($timer, $ac);
+                    $this->nap_time($timer, $ac);
                 }
                 $movie = $tmdb->findMovie($imdb_id);
                 $ac++;
@@ -288,7 +288,7 @@ class Cron extends CI_Controller {
                     $locked = 2;
 
                     if ($ac >= $this->tmdb_call_limit) {
-                        $this->go_sleep($timer, $ac);
+                        $this->nap_time($timer, $ac);
                     }
                     $movie->loadTrailer();
                     $ac++;
@@ -303,7 +303,7 @@ class Cron extends CI_Controller {
                         $tmdb->setLang('en');
 
                         if ($ac >= $this->tmdb_call_limit) {
-                            $this->go_sleep($timer, $ac);
+                            $this->nap_time($timer, $ac);
                         }
                         $movie->loadTrailer();
                         $ac++;
@@ -349,7 +349,7 @@ class Cron extends CI_Controller {
         else $this->o('$movie_ids.length = 0');
     }
     
-    private function go_sleep(&$timer, &$ac)
+    private function nap_time(&$timer, &$ac)
     {
         if ($this->time_interval > 0) {
             $sleep_time = $this->time_interval - (time() - $timer);

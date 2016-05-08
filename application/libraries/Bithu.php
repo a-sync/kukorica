@@ -6,9 +6,11 @@
  * Time: 15:13
  */
 
+# bH user #
 define('_UID', '55830');
 define('_PASS', 'a628e51fe55b66e4932dad014dc71bbe');
 define('_LIMIT', 50);
+# /bH user #
 
 define('_DOMAIN', 'http://bithumen.be');
 define('_URL', _DOMAIN.'/browse.php?');

@@ -23,6 +23,7 @@ class Api extends CI_Controller {
 
         $this->load->library('user_agent');
 
+        //TODO: also look for default PT segments uri->segment(1);#api/v2/movies_list.json??? etc.
         if($this->agent->agent_string() == ''
         && (
                 $this->input->get('cat') == 'Film/Hun/SD'//--BT v1.0.4/1.0.8a
@@ -61,7 +62,7 @@ class Api extends CI_Controller {
             'page_number'=>$this->pagenum,
             'movies'=>$this->MOVIES);
 
-        //TODO: error handling?
+        //TODO: error handling? ^^
         $RESPONSE = array('status'=>'ok', 'status_message'=>'Query was successful', 'data'=>$DATA);
 
         //$this->output->enable_profiler(TRUE);
@@ -78,7 +79,7 @@ class Api extends CI_Controller {
 
         if($this->load->is_loaded(ucfirst($lib))) {
 
-            // Not used atm.:
+            // Not used parameters atm.:
             //&limit=50 # rogzitett BT beallitas; FIX
             //&with_rt_ratings=true # nincs kuldve BT v1.0.4 ota; FIX
             //&lang=hu # BT nyelv beallitas
@@ -87,7 +88,7 @@ class Api extends CI_Controller {
 
             // FONTOS! Cache miatt, minden új elemet fel kell venni ami megváltoztatja a response-ot!!!
             // ITT: app/config/config.php [cache_query_string]
-            // protip: eleve abbol a konfigbol jojjon a lista
+            // protip: eleve abbol a konfigbol jojjon a lista, és itt csak kivételekkel foglalkozunk
             $this->{$lib}->parseReq($this->input->get(array(
             #/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=25&lang=hu&cat=Eng
             #/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&lang=hu&cat=Eng
@@ -204,7 +205,8 @@ class Api extends CI_Controller {
 
                                     if($M['background_image']) $site_movies[$i]['background_image'] = $M['background_image'];
                                     if($M['small_cover_image']) $site_movies[$i]['small_cover_image'] = $M['small_cover_image'];
-                                    if(//$site_movies[$i]['medium_cover_image'] == '' && //eleg sok kep nem tolt be :/ (503/521)
+                                    //csak ha nincs az oldalon, akkor hasznalja a tarolt boritot
+                                    if(#$site_movies[$i]['medium_cover_image'] == '' && // eleg sok kep nem tolt be cdn-rol :/ (503/521)
                                         $M['medium_cover_image']) {
                                         $site_movies[$i]['medium_cover_image'] = $M['medium_cover_image'];
                                     }
