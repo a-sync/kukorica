@@ -92,6 +92,7 @@ class Bithu extends Scraper {
                 $params['sort'] = 'times_completed';
                 break;
             case 'trending': # legaktívabbak
+            case 'trending_score':
                 $params['sort'] = 'activity';
                 $this->col_mod = 1;
                 break;
@@ -105,36 +106,38 @@ class Bithu extends Scraper {
                 $params['sort'] = 'added';
         }
 
-        switch($INPUT['genre'])
+        switch(strtolower($INPUT['genre']))
         {
-            //case 'All': $params['genre'] = 0; break;
-            case 'Action': $params['genre'] = 1; break;
-            case 'Adventure': $params['genre'] = 2; break;
-            case 'Animation': $params['genre'] = 3; break;
-            case 'Biography': $params['genre'] = 4; break;
-            case 'Comedy': $params['genre'] = 5; break;
-            case 'Crime': $params['genre'] = 6; break;
-            case 'Documentary': $params['genre'] = 7; break;
-            case 'Drama': $params['genre'] = 8; break;
-            case 'Family': $params['genre'] = 9; break;
-            case 'Fantasy': $params['genre'] = 10; break;
-            case 'Film-Noir': $params['genre'] = 11; break;
-            case 'Gameshow': $params['genre'] = 12; break;
-            case 'History': $params['genre'] = 13; break;
-            case 'Horror': $params['genre'] = 14; break;
-            case 'Music': $params['genre'] = 15; break;
-            case 'Musical': $params['genre'] = 16; break;
-            case 'Mystery': $params['genre'] = 17; break;
-            case 'News': $params['genre'] = 18; break;
-            case 'Reality': $params['genre'] = 19; break;
-            case 'Romance': $params['genre'] = 20; break;
-            case 'Sci-Fi': $params['genre'] = 21; break;
-            case 'Short': $params['genre'] = 22; break;
-            case 'Sport': $params['genre'] = 23; break;
-            case 'Talkshow': $params['genre'] = 24; break;
-            case 'Thriller': $params['genre'] = 25; break;
-            case 'War': $params['genre'] = 26; break;
-            case 'Western': $params['genre'] = 27; break;
+            //case 'all': $params['genre'] = 0; break;
+            case 'action':      $params['genre'] = 1; break;
+            case 'adventure':   $params['genre'] = 2; break;
+            case 'animation':   $params['genre'] = 3; break;
+            case 'biography':   $params['genre'] = 4; break;
+            case 'comedy':      $params['genre'] = 5; break;
+            case 'crime':       $params['genre'] = 6; break;
+            case 'documentary': $params['genre'] = 7; break;
+            case 'drama':       $params['genre'] = 8; break;
+            case 'family':      $params['genre'] = 9; break;
+            case 'fantasy':     $params['genre'] = 10; break;
+            case 'film-noir':
+            case 'filmnoir':    $params['genre'] = 11; break;
+            case 'gameshow':    $params['genre'] = 12; break;
+            case 'history':     $params['genre'] = 13; break;
+            case 'horror':      $params['genre'] = 14; break;
+            case 'music':       $params['genre'] = 15; break;
+            case 'musical':     $params['genre'] = 16; break;
+            case 'mystery':     $params['genre'] = 17; break;
+            case 'news':        $params['genre'] = 18; break;
+            case 'reality':     $params['genre'] = 19; break;
+            case 'romance':     $params['genre'] = 20; break;
+            case 'sci-fi':
+            case 'scifi':       $params['genre'] = 21; break;
+            case 'short':       $params['genre'] = 22; break;
+            case 'sport':       $params['genre'] = 23; break;
+            case 'talkshow':    $params['genre'] = 24; break;
+            case 'thriller':    $params['genre'] = 25; break;
+            case 'war':         $params['genre'] = 26; break;
+            case 'western':     $params['genre'] = 27; break;
         }
 
         if($INPUT['query_term'])
