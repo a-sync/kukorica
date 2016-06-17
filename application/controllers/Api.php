@@ -118,7 +118,7 @@ class Api extends CI_Controller {
                 $imdb_ids = $this->{$lib}->getImdbIds();
 
                 if(is_array($site_movies) && count($site_movies) > 0) {
-                    $this->MOVIES = $this->parseMovieData($site_movies, $torrent_ids, $imdb_ids);
+                    $this->MOVIES = array_values($this->parseMovieData($site_movies, $torrent_ids, $imdb_ids));
                 }
                 else log_message('debug', 'Empty result from URL: '.$this->{$lib}->getScrapeUrl().' $site_movies = '.print_r($site_movies,true));
             }

@@ -139,7 +139,7 @@ class Bithu extends Scraper {
 
         if($INPUT['query_term'])
         {
-            $qs = mb_convert_encoding($INPUT['query_term'], 'ISO-8859-2');
+            $qs = mb_convert_encoding($INPUT['query_term'], 'ISO-8859-2');// bH <3
 
             $params['search'] = urlencode($qs);
         }
