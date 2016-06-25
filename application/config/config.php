@@ -301,9 +301,9 @@ $config['cache_path'] = '';
 |	             of query parameters.
 |
 */
-#/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=25&lang=hu&cat=Eng
-#/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&lang=hu&cat=Eng
-$config['cache_query_string'] = array('cat', 'page', 'sort_by', 'genre', 'query_term');
+#/kukorica/api/v2/list_movies_pct.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&genre=Western&lang=hu&cat=Hun
+#/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&genre=Western&lang=hu&cat=Eng
+$config['cache_query_string'] = array('sort_by', 'page', 'query_term', 'genre', 'cat');
 
 /*
 |--------------------------------------------------------------------------
