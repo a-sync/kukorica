@@ -79,16 +79,16 @@ class Api extends CI_Controller {
 
         if($this->load->is_loaded(ucfirst($lib))) {
 
-            // Not used parameters atm.:
-            //&limit=50 # rogzitett BT beallitas; FIX
-            //&with_rt_ratings=true # nincs kuldve BT v1.0.4 ota; FIX
+            // Nem használt bejövő paraméterek:
+            //&limit=50 # rogzitett BT beallitas; 
+            //&with_rt_ratings=true # nincs kuldve BT v1.0.4 ota; 
             //&lang=hu # BT nyelv beallitas
-            //&quality=1080p # BT-ben a quality valto kapcsolja, beallitasokban ki van kapcsolva a mezo; 1080p az alap BT v1.0.6 ota; IGNORE
-            //&order_by=asc # van utalas a valtasra PT helpben (dblclick a filteren), de ugy tunik nem valthato; FIX
+            //&quality=1080p # BT-ben a quality valto kapcsolja, beallitasokban ki van kapcsolva a mezo; 1080p az alap BT v1.0.6 ota; 
+            //&order_by=asc # van utalas a valtasra PT helpben (dblclick a filteren), de ugy tunik nem valthato; 
 
             // FONTOS! Cache miatt, minden új elemet fel kell venni ami megváltoztatja a response-ot!!!
             // ITT: app/config/config.php [cache_query_string]
-            // protip: eleve abbol a konfigbol jojjon a lista, és itt csak kivételekkel foglalkozunk
+            // TODO protip: eleve abbol a konfigbol jojjon a lista, és itt csak a kivételekkel foglalkozzunk
             $this->{$lib}->parseReq($this->input->get(array(
             #/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=25&lang=hu&cat=Eng
             #/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&lang=hu&cat=Eng
