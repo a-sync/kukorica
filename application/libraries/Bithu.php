@@ -207,7 +207,7 @@ class Bithu extends Scraper {
             $genres = array();
             $small_cover_image = '';
             $medium_cover_image = '';
-            //                       NON-BREAKING SPACE
+            //                            NON-BREAKING SPACE
             $tmp_title = trim(str_replace(chr(0xC2).chr(0xA0), ' ', $cols->item(1)->getElementsByTagName('div')->item(0)->textContent));
             $tmp_pos = strrpos($tmp_title, '[');
             if($tmp_pos !== false) $tmp_title = trim(substr($tmp_title, 0, $tmp_pos));
@@ -298,13 +298,13 @@ class Bithu extends Scraper {
             if($filenum >= $filenum_treshold)
             {
                 // HA:
-                //      több mint $filenum_treshold fájl
+                //      több mint $filenum_treshold fájlt tartalmaz a torrent
                 // AKKOR:
 
                 $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
                 if(
                     (
-                       ($filenum <= 50  && $size_bytes > 2147483648 )//2GB //itt azert rezeg a lec TODO: ha tárolva lesz, lekérni a gyanús fájlszámú / méretű torrenteket
+                       ($filenum <= 50  && $size_bytes > 2147483648 )//2GB //itt azert rezeg a lec TODO: ha tárolva lesz, lekérni a gyanús fájlszámú / méretű torrenteket (HD kategória itt egyből megbukik)
                     || ($filenum <= 100 && $size_bytes > 10737418240)//10GB
                     || ($filenum <= 200 && $size_bytes > 21474836480)//20GB
                     )
@@ -389,6 +389,11 @@ class Bithu extends Scraper {
             $this->imdb_ids[] = ($imdb_id == '') ? 0 : intval(trim($imdb_id, 't'));
         }
 
+        # BT nem veszi figyelembe jelenleg, ill. 0-ás ID vagy kizárás miatt nem 
+        # lehet tudni előre, hogy mennyi lejátszhatót talál egy oldalnyi torrentben, 
+        # ezért a limit * pagenum sem megbízható a visszakapott találatok tényleges 
+        # számából lehet megállapítani, hogy a lapozó végére értünk-e, de azt 
+        # csak az utolsó oldalon
         //if(intval($this->movie_count) <= 0 || count($this->movies) < _LIMIT) {
         //    $this->movie_count = count($this->movies) + (($this->pagenum - 1) * _LIMIT);
         //}
