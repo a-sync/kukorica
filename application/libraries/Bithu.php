@@ -291,55 +291,7 @@ class Bithu extends Scraper {
             }
 
             // KIZÁRÁSOK
-            if($size_bytes < 52428800) continue;//50MB
-            elseif($seeds == 0) continue;
-
-            $filenum_treshold = ($this->params['cat'] == '19') ? 12 : 15;//Eng = 12db; Hun = 15db
-            if($filenum >= $filenum_treshold)
-            {
-                // HA:
-                //      több mint $filenum_treshold fájlt tartalmaz a torrent
-                // AKKOR:
-
-                $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
-                if(
-                    (
-                       ($filenum <= 50  && $size_bytes > 2147483648 )//2GB //itt azert rezeg a lec TODO: ha tárolva lesz, lekérni a gyanús fájlszámú / méretű torrenteket (HD kategória itt egyből megbukik)
-                    || ($filenum <= 100 && $size_bytes > 10737418240)//10GB
-                    || ($filenum <= 200 && $size_bytes > 21474836480)//20GB
-                    )
-                &&  (
-                       stripos($title_cut, '.collection.') !== false
-                    || stripos($title_cut, '.pack.') !== false
-                    || stripos($title_cut, '.osszes.') !== false
-                    || stripos($title_cut, '.gyujtemeny.') !== false
-                    || stripos($title_cut, '.gyujtemenye.') !== false
-                    || stripos($title_cut, '.boxset.') !== false
-                    || stripos($title_cut, '.i-') !== false
-                    || stripos($title_cut, '.1-') !== false
-                    || stripos($title_cut, '.1.2.') !== false
-                    || stripos($title_cut, 'logy.') !== false
-                    || stripos($title_cut, 'logia.') !== false
-                    )
-                )
-                {
-                    //   HA:
-                    //        max. 50  fájl ÉS nagyobb mint 2GB
-                    //        VAGY
-                    //        max. 100 fájl ÉS nagyobb mint 10GB
-                    //        VAGY
-                    //        max. 200 fájl ÉS nagyobb mint 20GB
-                    //      ÉS
-                    //        tartalmazza valemelyik kulcsszót
-                    //   AKKOR:
-                    //      (valószínűleg nem becsomagolt filmgyűjtemény)
-                }
-                else {
-                    //   KÜLÖNBEN:
-                    //      átugorjuk ennek a rögzítését (csomagolt állományok a torrentben)
-                    continue;
-                }
-            }
+            if($seeds == 0 || !$this->is_playable($size_bytes, $filenum, $title_cut)) continue;
 
             // DATA MODEL TODO: külön absztrakt osztály adja vissza az alap modeleket db-vel szinkronba hozva
             $TORRENT = array(
@@ -402,6 +354,61 @@ class Bithu extends Scraper {
     }
 
     /** HELPERS **/
+    private function is_playable($size_bytes, $filenum, $title_cut)
+    {
+        if($size_bytes < 52428800) return FALSE;//50MB
+
+        $filenum_treshold = ($this->params['cat'] == '19') ? 12 : 15;//Eng = 12db; Hun = 15db
+        if($filenum >= $filenum_treshold)
+        {
+            // HA:
+            //      több mint $filenum_treshold fájlt tartalmaz a torrent
+            // AKKOR:
+
+            $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
+            if(
+                (
+                    ($filenum <= 50  && $size_bytes > 2147483648 )//2GB //itt azert rezeg a lec TODO: ha tárolva lesz, lekérni a gyanús fájlszámú / méretű torrenteket (HD kategória itt egyből megbukik)
+                    || ($filenum <= 100 && $size_bytes > 10737418240)//10GB
+                    || ($filenum <= 200 && $size_bytes > 21474836480)//20GB
+                )
+                &&  (
+                    stripos($title_cut, '.collection.') !== false
+                    || stripos($title_cut, '.pack.') !== false
+                    || stripos($title_cut, '.osszes.') !== false
+                    || stripos($title_cut, '.gyujtemeny.') !== false
+                    || stripos($title_cut, '.gyujtemenye.') !== false
+                    || stripos($title_cut, '.boxset.') !== false
+                    || stripos($title_cut, '.i-') !== false
+                    || stripos($title_cut, '.1-') !== false
+                    || stripos($title_cut, '.1.2.') !== false
+                    || stripos($title_cut, 'logy.') !== false
+                    || stripos($title_cut, 'logia.') !== false
+                )
+            )
+            {
+                //   HA:
+                //        max. 50  fájl ÉS nagyobb mint 2GB
+                //        VAGY
+                //        max. 100 fájl ÉS nagyobb mint 10GB
+                //        VAGY
+                //        max. 200 fájl ÉS nagyobb mint 20GB
+                //      ÉS
+                //        tartalmazza valemelyik kulcsszót
+                //   AKKOR:
+                //      (valószínűleg nem becsomagolt filmgyűjtemény)
+                return TRUE;
+            }
+            else {
+                //   KÜLÖNBEN:
+                //      átugorjuk ennek a rögzítését (csomagolt állományok a torrentben)
+                return FALSE;
+            }
+        }
+
+        return TRUE;
+    }
+
     private function parse_date($str)
     {
         if (stripos($str, ' ×') === false) $tmp1 = trim($str);
