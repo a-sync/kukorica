@@ -180,8 +180,21 @@ class Kukorica extends CI_Model {
         $query = $this->db
             ->select('imdb_id, year, title, rating')
             ->from('movies')
+            ->where('updated < DATE_SUB(NOW(), INTERVAL 90 DAY)')
+            ->order_by('updated', 'ASC')
+            ->limit($limit)
+            ->get()
+        ;
+
+        return $query->result_array();
+    }
+
+    public function get_movies_without_rating($limit = NULL)
+    {
+        $query = $this->db
+            ->select('imdb_id, year, title, rating')
+            ->from('movies')
             ->where('rating', 0)
-            ->or_where('updated < DATE_SUB(NOW(), INTERVAL 90 DAY)')
             ->order_by('updated', 'ASC')
             ->limit($limit)
             ->get()

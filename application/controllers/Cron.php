@@ -80,8 +80,10 @@ class Cron extends CI_Controller {
         $this->load->model('kukorica');
         $this->load->helper('api_helper');
 
-        $movies = $this->kukorica->get_movies_to_update(10);
+        $movies1 = $this->kukorica->get_movies_without_rating(10);
+        $movies2 = $this->kukorica->get_movies_to_update(10);
 
+        $movies = array_merge($movies1, $movies2);
         if(count($movies) > 0)
         {
             //$ur = '011'.str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
