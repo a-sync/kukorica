@@ -80,7 +80,7 @@ class Cron extends CI_Controller {
         $this->load->model('kukorica');
         $this->load->helper('api_helper');
 
-        $movies = $this->kukorica->get_locked_movies_without_rating(10);
+        $movies = $this->kukorica->get_movies_to_update(10);
 
         if(count($movies) > 0)
         {
@@ -88,7 +88,7 @@ class Cron extends CI_Controller {
             $ur = '011'.substr((string) time(), 1, 5);
 
             log_message('debug', 'imdb_meta start. movies.length = '.count($movies));
-            $this->o('elozetesek start. ur = '.$ur.' movies.length = '.count($movies).'<br/>');
+            $this->o('imdb_meta start. ur = '.$ur.' movies.length = '.count($movies).'<br/>');
 
             foreach($movies as $m) {
                 $imdb_id = 'tt' . str_pad($m['imdb_id'], 7, '0', STR_PAD_LEFT);
@@ -102,7 +102,11 @@ class Cron extends CI_Controller {
 
                 $imdb_resp = scrape_url($u);
 
-                $imdb_rating = 0;
+                if($m['rating'] != 0) $imdb_rating = $m['rating'];
+                else $imdb_rating = 0.01;
+                //FIXME: adatbázisban imdb_updated mező jelölje
+                //       a rating=0 helyett az imdb update státuszt
+
                 $imdb_year = $m['year'];
 
                 if(strpos($imdb_resp, 'imdb.rating.run(') === 0)

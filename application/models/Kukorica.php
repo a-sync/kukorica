@@ -175,13 +175,13 @@ class Kukorica extends CI_Model {
         return $query->result_array();
     }
 
-    public function get_locked_movies_without_rating($limit = NULL)
+    public function get_movies_to_update($limit = NULL)
     {
         $query = $this->db
-            ->select('imdb_id, year, title')
+            ->select('imdb_id, year, title, rating')
             ->from('movies')
-            ->where_in('locked', 2)
             ->where('rating', 0)
+            ->or_where('updated < DATE_SUB(NOW(), INTERVAL 90 DAY)')
             ->order_by('updated', 'ASC')
             ->limit($limit)
             ->get()
