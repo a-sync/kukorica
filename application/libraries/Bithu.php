@@ -251,7 +251,9 @@ class Bithu extends Scraper {
                     $imdb_rating = str_replace(array('[imdb: ', ']'), '', $link->textContent);
                     $imdb_rating = floatval($imdb_rating);
                 } elseif ($link->hasAttribute('alt') && $link->getAttribute('alt') == 'info') {
-                    $info_url = str_replace('http://anonym.to/?', '', $href);
+                    $info_url = trim(str_replace('http://anonym.to/?', '', $href));
+                    if(stripos($info_url, 'http') !== 0) $info_url = '';
+                    
                     if ($link->hasAttribute('onmouseover')) {
                         $mo = $this->parse_poster($link->getAttribute('onmouseover'));
                         $small_cover_image = $mo['small'];
