@@ -286,7 +286,7 @@ class Cron extends CI_Controller {
                 {
                     log_message('error', 'cron error: $movie === true @ '.$imdb_id);
                     $this->o('cron error: $movie === true @ '.$imdb_id);
-                    $this->kukorica->update_movie($imdb_id, array('locked' => 1));
+                    $this->kukorica->update_movie($imdb_id, array('locked' => 1, 'updated' => '2000-'.date('m-d H:i:s')));
                 }
                 else {
                     $movie->setAPI($tmdb);
@@ -328,8 +328,9 @@ class Cron extends CI_Controller {
                         'title' => $movie->getTitle(),
                         //'rating' => $movie->get('vote_average'),//tmdb saját rating értéke
                         // vote_count (int) // -||-
-                        'yt_trailer_code' => $movie->getTrailer()
+                        'yt_trailer_code' => $movie->getTrailer(),
                         //get('genre_ids') [3, 22, 14]
+                        'updated' => '2000-'.date('m-d H:i:s')
                     );
 
                     if($movie->getBackdrop()) $movie_data['background_image'] = $img_config['base_url'] . $img_config['backdrop_sizes'][2] . $movie->getBackdrop();
