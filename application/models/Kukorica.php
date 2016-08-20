@@ -208,7 +208,7 @@ class Kukorica extends CI_Model {
     {
         $imdb_id = intval(trim($imdb_id, 't'));
         if($imdb_id) {
-            if($force_poke) $this->db->set('updated', 'NOW()', FALSE);
+            if($force_poke && !isset($data['updated'])) $this->db->set('updated', 'NOW()', FALSE);
 
             return $this->db
                 ->where('imdb_id', $imdb_id)
