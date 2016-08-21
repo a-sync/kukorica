@@ -8,6 +8,7 @@ TODO:
 
       api altal lekert/kuldott adatok matchelese a PT-vel (movie model)
       title_long movie helyett torrenthez menjen: filename
+      [REQ] törlése a címből
 
     * tmdb / omdb id-t tárolni kell
     * torrenteknél tárolni a fájlok számát is
