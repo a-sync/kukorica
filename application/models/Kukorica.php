@@ -188,6 +188,13 @@ class Kukorica extends CI_Model {
 
         return $query->result_array();
     }
+    /** reset movie update timestamps
+     *  
+     *  SET @rn = 0;
+     *  UPDATE movies 
+     *  SET updated = DATE('2016-08-01') + INTERVAL(@rn := @rn + 6) MINUTE 
+     *  ORDER BY imdb_id ASC;
+    */
 
     public function get_movies_without_rating($limit = NULL)
     {
