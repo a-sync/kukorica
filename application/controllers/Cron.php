@@ -9,7 +9,7 @@
 # 10 */1 * * * wget -O /dev/null http://bigfathead.eu/kukorica/cron/imdb
 
 class Cron extends CI_Controller {
-    private $tmdb_api_key = '4a1fe498a141725bb546cc9fd0a1a9e9';
+    private $tmdb_api_key = '4a1fe498a141725bb546cc9fd0a1a9e9';//TT key: 57983e31fb435df4df77afb854740ea9
     private $tmdb_language = 'hu';
     private $cron_movie_limit = NULL;
     private $tmdb_call_limit = 30;
