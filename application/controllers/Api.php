@@ -194,10 +194,11 @@ class Api extends CI_Controller {
                             {
                                 $M =& $db_movies[$imdb_ids[$i]];
 
+                                if($M['year']) $site_movies[$i]['year'] = $M['year'];
+                                if($M['rating']) $site_movies[$i]['rating'] = round($M['rating'], 2);
+
                                 if ($M['locked'] >= 2)///stupid, stupid stoopid locked!!!
                                 {
-                                    if($M['year']) $site_movies[$i]['year'] = $M['year'];
-
                                     if($site_movies[$i]['title'] == '' && $M['title']) {
                                         $site_movies[$i]['title'] = $M['title'];
                                     }
@@ -212,7 +213,6 @@ class Api extends CI_Controller {
                                     }
                                     if($M['large_cover_image']) $site_movies[$i]['large_cover_image'] = $M['large_cover_image'];
 
-                                    if($M['rating']) $site_movies[$i]['rating'] = round($M['rating'], 2);
                                     if($M['yt_trailer_code']) $site_movies[$i]['yt_trailer_code'] = $M['yt_trailer_code'];
                                 }
                             }
