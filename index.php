@@ -68,7 +68,7 @@ switch (ENVIRONMENT)
 	case 'development':
 		error_reporting(-1);
 		ini_set('display_errors', 1);
-		# smith
+        # smith
 		ini_set("log_errors", 1);
 		ini_set("error_log", "php-error.log");
 		ini_set("date.timezone", "Europe/Budapest");
