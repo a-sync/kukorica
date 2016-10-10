@@ -35,6 +35,7 @@
  * @since	Version 1.0.0
  * @filesource
  */
+	ini_set("date.timezone", "Europe/Budapest");
 
 /*
  *---------------------------------------------------------------
@@ -53,7 +54,7 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
 
 /*
  *---------------------------------------------------------------
@@ -68,15 +69,12 @@ switch (ENVIRONMENT)
 	case 'development':
 		error_reporting(-1);
 		ini_set('display_errors', 1);
-        # smith
+
 		ini_set("log_errors", 1);
 		ini_set("error_log", "php-error.log");
-		ini_set("date.timezone", "Europe/Budapest");
-        # /smith
 	break;
 
 	case 'testing':
-	case 'production':
 		ini_set('display_errors', 0);
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
@@ -86,6 +84,11 @@ switch (ENVIRONMENT)
 		{
 			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
 		}
+	break;
+
+	case 'production':
+		ini_set('display_errors', 0);
+		error_reporting(0);
 	break;
 
 	default:
