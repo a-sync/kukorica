@@ -13,6 +13,8 @@ TODO:
     * tmdb / omdb id-t tárolni kell
     * torrenteknél tárolni a fájlok számát is
     * carpathians bevezetése
+    
+    * update TMDB-V3-API
 
 CRON:
 * tmdb/omdb keresés az ismeretlen filmek esetén
