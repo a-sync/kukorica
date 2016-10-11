@@ -33,10 +33,10 @@ class Cron extends CI_Controller {
                     require_once( APPPATH . 'third_party/tmdb/tmdb-api.php' );
                     break;
                 default:
-                    show_404();
+                    show_404('cron type', FALSE);
             }
         }
-        else show_404();
+        else show_404('cron', FALSE);
     }
 
     public function index()

@@ -36,7 +36,7 @@ class Api extends CI_Controller {
         {
             $this->load->helper('api_helper');
         }
-        else show_404();
+        else show_404('api', FALSE);
     }
 
     public function index()
