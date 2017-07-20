@@ -23,7 +23,6 @@ class Api extends CI_Controller {
 
         $this->load->library('user_agent');
 
-        //TODO: also look for default PT segments uri->segment(1);#api/v2/movies_list.json??? etc.
         if($this->agent->agent_string() == ''
         && (
                 $this->input->get('cat') == 'Film/Hun/SD'//--BT v1.0.4/1.0.8a
@@ -43,10 +42,10 @@ class Api extends CI_Controller {
     {
         if(count($_REQUEST)>0) log_message('debug', '('.$_SERVER['REMOTE_ADDR'].') '.$_SERVER['REQUEST_URI']);
 
-        if(strpos($this->uri->segment(1), 'carpathians') === 0)
+        if(strpos($this->uri->segment(1), 'ncore') === 0)
         {
             $this->site_id = 2;
-            $this->lib = 'carpat';
+            $this->lib = 'ncore';
         }
         else # if(strpos($this->uri->segment(1), 'bithumen') === 0)
         {

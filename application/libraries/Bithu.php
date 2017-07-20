@@ -275,10 +275,6 @@ class Bithu extends Scraper {
             $peers = explode(' / ', $cols->item(8+$this->col_mod)->textContent);
             $peers = intval($peers[1]);
 
-            $title_cut = explode('-', $title_long);
-            //$releaser =
-                array_pop($title_cut);
-
             $quality = '720p';
             if( stripos($title_long, '.x264.')
              || stripos($title_long, '.x264-'))
@@ -293,7 +289,7 @@ class Bithu extends Scraper {
             }
 
             // KIZÁRÁSOK
-            if($seeds == 0 || !$this->is_playable($size_bytes, $filenum, $title_cut)) continue;
+            if($seeds == 0 || !$this->is_playable($size_bytes, $filenum, $title_long)) continue;
 
             // DATA MODEL TODO: külön absztrakt osztály adja vissza az alap modeleket db-vel szinkronba hozva
             $TORRENT = array(
@@ -356,7 +352,7 @@ class Bithu extends Scraper {
     }
 
     /** HELPERS **/
-    private function is_playable($size_bytes, $filenum, $title_cut)
+    private function is_playable($size_bytes, $filenum, $title_long)
     {
         if($size_bytes < 52428800) return FALSE;//50MB
 
@@ -367,6 +363,9 @@ class Bithu extends Scraper {
             //      több mint $filenum_treshold fájlt tartalmaz a torrent
             // AKKOR:
 
+            $title_cut = explode('-', $title_long);
+            //$releaser =
+                array_pop($title_cut);
             $title_cut = implode('-', $title_cut);//torrent név releaser nélkül
             if(
                 (
@@ -434,10 +433,10 @@ class Bithu extends Scraper {
         $tmp = explode(' ', strtolower($tmp2));
         switch ($tmp[1]) {
             case 'gib':
-                $bytes = $tmp[0] * 1073741824;
+                $bytes = floatval($tmp[0]) * 1073741824;
                 break;
             case 'mib':
-                $bytes = $tmp[0] * 1048576;
+                $bytes = floatval($tmp[0]) * 1048576;
                 break;
         }
 
