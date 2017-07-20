@@ -6,4 +6,4 @@
  * Time: 14:07
  */
 
-$config['kukorica'] = '1.0.6';
+$config['kukorica'] = '1.1.0';
