@@ -19,6 +19,7 @@ define('_TORRENT', _DOMAIN.'/torrents.php?action=download&id={ID}&key={PASSKEY}'
 //https://ncore.cc/torrents.php?action=download&id=2148231&key=201fc7624419440e97b1c6f66b401d77
 
 //TODO: check requests here: https://github.com/szabbenjamin/nCoreDownloader/blob/master/ncore.js
+//login: ne_leptessen_ki=1
 
 require_once( APPPATH . 'third_party/abstract/Scraper.abstract.php' );
 
