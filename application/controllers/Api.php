@@ -5,7 +5,7 @@
  * Date: 2016.01.16.
  * Time: 13:40
  */
-define('_CACHETIME', 12);
+define('_CACHETIME', ($_SERVER['REMOTE_ADDR']==='127.0.0.1' ? 0 : 12));
 
 class Api extends CI_Controller {
 

@@ -26,6 +26,7 @@ require_once( APPPATH . 'third_party/abstract/Scraper.abstract.php' );
 class Ncore extends Scraper {
     private $params;
     private $torrenttable;
+    private $x;
 
     protected $pagenum;
     protected $limit = _LIMIT;//felhasználó beállítástól függ (1-100)
@@ -154,8 +155,8 @@ class Ncore extends Scraper {
             libxml_use_internal_errors($previous_errors);
             //$this->torrenttable = $dom->getElementById('torrenttable');
 
-            $x = new DOMXPath($dom);
-            $el = $x->query('//div[@id="box_torrent_all"]');
+            $this->x = new DOMXPath($dom);
+            $el = $this->x->query('//div[@class="box_torrent_all"]');
 
             $this->torrenttable = $el->item(0);
             if(is_object($this->torrenttable))
@@ -178,7 +179,13 @@ class Ncore extends Scraper {
         $this->torrent_ids = array();
         $this->imdb_ids = array();
 
-        $rows = $this->torrenttable->query('//div[starts-with(@class,"box_nagy")]');
+        $rows = $this->x->query('.//div[starts-with(@class,"box_nagy")]', $this->torrenttable);
+
+        if ($rows === false) {
+            log_message('error', 'ncore request parsing failed');
+            $rows = [];
+        }
+
         foreach($rows as $i => $node) {
             $cover_image = '';
             $imdb_id = '';
@@ -186,7 +193,7 @@ class Ncore extends Scraper {
             $info_url = '';
             $genres = array();
 
-            $cols = $node->query('//div[starts-with(@class,"box_")]');
+            $cols = $this->x->query('.//div[starts-with(@class,"box_")]', $node);
 
             $torrent_link = $cols->item(0)->getElementsByTagName('a')->item(0);
 
@@ -195,7 +202,7 @@ class Ncore extends Scraper {
             $title_long = $torrent_link->getAttribute('title');
             $title = $title_long;
 
-            $info_ico = $cols->item(0)->query('//img[@class="infobar_ico"]');
+            $info_ico = $this->x->query('.//img[@class="infobar_ico"]', $cols->item(0));
             if ($info_ico->length > 0) {
                 $info_ico = $info_ico->item(0);
 
@@ -204,7 +211,7 @@ class Ncore extends Scraper {
                 }
             }
 
-            $info_siterank = $cols->item(0)->query('//div[@class="siterank"]');
+            $info_siterank = $this->x->query('.//div[@class="siterank"]', $cols->item(0));
             if ($info_siterank->length > 0) {
                 $info_siterank = $info_siterank->item(0);
 
@@ -220,7 +227,7 @@ class Ncore extends Scraper {
                     }
                 }
 
-                $info_link = $info_siterank->query('//a[@class="infolink"]');
+                $info_link = $this->x->query('.//a[@class="infolink"]', $info_siterank);
                 if ($info_link->length > 0) {
                     $info_link = $info_link->item(0);
 
