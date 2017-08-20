@@ -53,6 +53,6 @@ $route['default_controller'] = 'api';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-//$route['(.*)'] = 'api';
 $route['api/(.*)'] = 'api';
+$route['([a-z]+)/api/(.*)'] = 'api';
 $route['cron/(:any)'] = 'cron';
