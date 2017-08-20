@@ -15,7 +15,7 @@ define('_LIMIT', 50);
 define('_DOMAIN', 'http://ncore.cc');
 define('_URL', _DOMAIN.'/torrents.php?');
 define('_PASSKEY', '{PASSKEY}');
-define('_TORRENT', _DOMAIN.'/torrents.php?action=download&id={ID}&key={PASSKEY}');
+define('_TORRENT', _DOMAIN.'/torrents.php?action=download&id={ID}&key={PASSKEY}&/{ID}.torrent');
 
 require_once( APPPATH . 'third_party/abstract/Scraper.abstract.php' );
 
