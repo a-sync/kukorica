@@ -313,7 +313,7 @@ $config['cache_path'] = '';
 */
 #/kukorica/api/v2/list_movies_pct.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&genre=Western&lang=hu&cat=Hun
 #/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&genre=Western&lang=hu&cat=Eng
-$config['cache_query_string'] = array('sort_by', 'page', 'query_term', 'genre', 'cat');
+$config['cache_query_string'] = array('sort_by', 'sort', 'page', 'query_term', 'keywords', 'genre', 'cat');
 
 /*
 |--------------------------------------------------------------------------

@@ -90,12 +90,14 @@ class Api extends CI_Controller {
             // TODO protip: eleve abbol a konfigbol jojjon a lista, és itt csak a kivételekkel foglalkozzunk
             $this->{$lib}->parseReq($this->input->get(array(
             #/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=25&lang=hu&cat=Eng
-            #/kukorica/api/v2/list_movies.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&lang=hu&cat=Eng
+            #/kukorica/ncore/api/v2/list_movies.json?sort_by=date_added&limit=50&page=1&query_term=popcorn&lang=hu&cat=Eng
                 'cat',
                 'page',
                 'sort_by',
+                'sort',
                 'genre',
-                'query_term'
+                'query_term',
+                'keywords'
             ), TRUE));
 
             $this->pagenum = $this->{$lib}->getPagenum();

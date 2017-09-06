@@ -61,7 +61,7 @@ class Bithu extends Scraper {
 
         $params = array(
             'page' => $this->pagenum - 1,
-            'd' => 'DESC'//order_by=asc
+            'd' => 'DESC'//order_by=asc(desc) & order=1(-1)
         );
 
         switch($INPUT['cat'])
@@ -84,6 +84,10 @@ class Bithu extends Scraper {
                 $params['cat'] = '23';
         }
 
+        if (empty($INPUT['sort_by']) && !empty($INPUT['sort'])) {
+            $INPUT['sort_by'] = $INPUT['sort'];
+        }
+
         switch($INPUT['sort_by'])
         {
             case 'views':
@@ -102,7 +106,11 @@ class Bithu extends Scraper {
             case 'rating': # értékelés
                 $params['sort'] = 'rating';
                 break;
-            default://date_added # utoljára hozzáadva
+            case 'date_added': # utoljára hozzáadva
+            case 'last added':
+            case 'title':
+            case 'year':
+            default:
                 $params['sort'] = 'added';
         }
 
@@ -112,32 +120,48 @@ class Bithu extends Scraper {
             case 'action':      $params['genre'] = 1; break;
             case 'adventure':   $params['genre'] = 2; break;
             case 'animation':   $params['genre'] = 3; break;
-            case 'biography':   $params['genre'] = 4; break;
+            case 'biography':   $params['genre'] = 4; break; # bH
             case 'comedy':      $params['genre'] = 5; break;
             case 'crime':       $params['genre'] = 6; break;
+            case 'disaster': break;
             case 'documentary': $params['genre'] = 7; break;
             case 'drama':       $params['genre'] = 8; break;
+            case 'eastern': break;
             case 'family':      $params['genre'] = 9; break;
+            case 'fan-film': break;
             case 'fantasy':     $params['genre'] = 10; break;
             case 'film-noir':
             case 'filmnoir':    $params['genre'] = 11; break;
-            case 'gameshow':    $params['genre'] = 12; break;
+            case 'gameshow':    $params['genre'] = 12; break; # bH
             case 'history':     $params['genre'] = 13; break;
+            case 'holiday':     break;
             case 'horror':      $params['genre'] = 14; break;
+            case 'indie':       break;
             case 'music':       $params['genre'] = 15; break;
-            case 'musical':     $params['genre'] = 16; break;
+            case 'musical':     $params['genre'] = 16; break; # bH
             case 'mystery':     $params['genre'] = 17; break;
             case 'news':        $params['genre'] = 18; break;
-            case 'reality':     $params['genre'] = 19; break;
+            case 'none':        break;
+            case 'road':        break;
+            case 'reality':     $params['genre'] = 19; break; # bH
             case 'romance':     $params['genre'] = 20; break;
+            case 'science-fiction':
             case 'sci-fi':
             case 'scifi':       $params['genre'] = 21; break;
             case 'short':       $params['genre'] = 22; break;
-            case 'sport':       $params['genre'] = 23; break;
-            case 'talkshow':    $params['genre'] = 24; break;
+            case 'sport':
+            case 'sporting-event':
+            case 'sports':      $params['genre'] = 23; break;
+            case 'suspense':    break;
+            case 'talkshow':    $params['genre'] = 24; break; # bH
             case 'thriller':    $params['genre'] = 25; break;
+            case 'tv-movie':    break;
             case 'war':         $params['genre'] = 26; break;
             case 'western':     $params['genre'] = 27; break;
+        }
+
+        if (empty($INPUT['query_term']) && !empty($INPUT['keywords'])) {
+            $INPUT['query_term'] = $INPUT['keywords'];
         }
 
         if($INPUT['query_term'])
