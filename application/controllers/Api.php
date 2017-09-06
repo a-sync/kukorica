@@ -196,13 +196,15 @@ class Api extends CI_Controller {
 
                                 if($M['year']) $site_movies[$i]['year'] = $M['year'];
                                 if($M['rating']) $site_movies[$i]['rating'] = round($M['rating'], 2);
+                                if($M['genres']) {
+                                    $site_movies[$i]['genres'] = explode(',', $M['genres']);
+                                }
 
                                 if ($M['locked'] >= 2)///stupid, stupid stoopid locked!!!
                                 {
                                     if($M['runtime']) $site_movies[$i]['runtime'] = $M['runtime'];
                                     if($M['directors']) $site_movies[$i]['directors'] = explode(',', $M['directors']);
                                     if($M['cast']) $site_movies[$i]['cast'] = explode(',', $M['cast']);
-                                    if($M['genres']) $site_movies[$i]['genres'] = explode(',', $M['genres']);
 
                                     if($site_movies[$i]['title'] == '' && $M['title']) {
                                         $site_movies[$i]['title'] = $M['title'];
