@@ -47,7 +47,7 @@ class Api extends CI_Controller {
             $this->site_id = 2;
             $this->lib = 'ncore';
         }
-        else # if(strpos($this->uri->segment(1), 'bithumen') === 0)
+        else # if(strpos($this->uri->segment(1), 'bithu') === 0)
         {
             $this->site_id = 1;
             $this->lib = 'bithu';
@@ -135,7 +135,7 @@ class Api extends CI_Controller {
 
         $db_torrents = $this->kukorica->get_torrents_by_ids($torrent_ids);
         $db_movies = $this->kukorica->get_movies_by_ids($imdb_ids,
-            'imdb_id,year,title,synopsis,yt_trailer_code,locked,rating,'
+            'imdb_id,year,title,synopsis,yt_trailer_code,locked,rating,runtime,directors,cast,genres,'
            .'background_image,small_cover_image,medium_cover_image,large_cover_image');
 
         $new_torrents = array();
@@ -159,6 +159,7 @@ class Api extends CI_Controller {
                 if($imdb_ids[$i] == 0) {
                     //TODO: fake imdb_code ha lehetséges, h megjelenjen mindenféleképpen
                     //PROTIP: 1 000 000 000 tartomanyban is lehetnek id-k
+                    // pl.: site_id * 1 000 000 000 + torrent id
                 }
                 else
                 {
@@ -198,6 +199,11 @@ class Api extends CI_Controller {
 
                                 if ($M['locked'] >= 2)///stupid, stupid stoopid locked!!!
                                 {
+                                    if($M['runtime']) $site_movies[$i]['runtime'] = $M['runtime'];
+                                    if($M['directors']) $site_movies[$i]['directors'] = $M['directors'];
+                                    if($M['cast']) $site_movies[$i]['cast'] = $M['cast'];
+                                    if($M['genres']) $site_movies[$i]['genres'] = $M['genres'];
+
                                     if($site_movies[$i]['title'] == '' && $M['title']) {
                                         $site_movies[$i]['title'] = $M['title'];
                                     }
@@ -247,7 +253,7 @@ class Api extends CI_Controller {
                     }
 
                     if( ! isset( $db_torrents[ $torrent_ids[$i] ] )) {
-                        $torrent['torrent_id']  = $torrent_ids[$i];//TODO: e helyett Bithu lib adatoknál torrent_id-t rögzíteni
+                        $torrent['torrent_id']  = $torrent_ids[$i];//TODO: e helyett lib adatoknál torrent_id-t rögzíteni
                         $torrent['imdb_id']     = $imdb_ids[$i];
 
                         $new_torrents[] = $torrent;
@@ -255,7 +261,7 @@ class Api extends CI_Controller {
                     #else if($db_torrents[ $torrent_ids[$i] ]['imdb_id'] == 0) {
                     #    $upd_torrents[ $torrent_ids[$i] ] = array('imdb_id' => $imdb_ids[$i]);
                     #}
-                    //TODO: else { peers, seeds befrissítése ha rég volt updatelve }
+                    //TODO: else { peers, seeds frissítése ha rég volt updatelve }
                 }
             }
 
