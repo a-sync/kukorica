@@ -200,9 +200,9 @@ class Api extends CI_Controller {
                                 if ($M['locked'] >= 2)///stupid, stupid stoopid locked!!!
                                 {
                                     if($M['runtime']) $site_movies[$i]['runtime'] = $M['runtime'];
-                                    if($M['directors']) $site_movies[$i]['directors'] = $M['directors'];
-                                    if($M['cast']) $site_movies[$i]['cast'] = $M['cast'];
-                                    if($M['genres']) $site_movies[$i]['genres'] = $M['genres'];
+                                    if($M['directors']) $site_movies[$i]['directors'] = explode(',', $M['directors']);
+                                    if($M['cast']) $site_movies[$i]['cast'] = explode(',', $M['cast']);
+                                    if($M['genres']) $site_movies[$i]['genres'] = explode(',', $M['genres']);
 
                                     if($site_movies[$i]['title'] == '' && $M['title']) {
                                         $site_movies[$i]['title'] = $M['title'];
