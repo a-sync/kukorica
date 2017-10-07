@@ -9,7 +9,7 @@
 # 10 */1 * * * wget -O /dev/null http://bigfathead.eu/kukorica/cron/imdb
 
 class Cron extends CI_Controller {
-    private $tmdb_api_key = '4a1fe498a141725bb546cc9fd0a1a9e9';//TT key: 57983e31fb435df4df77afb854740ea9
+    private $tmdb_api_key = '4a1fe498a141725bb546cc9fd0a1a9e9';
     private $tmdb_language = 'hu';
     private $cron_movie_limit = NULL;
     private $tmdb_call_limit = 30;
@@ -320,7 +320,7 @@ class Cron extends CI_Controller {
                     //TODO: check_yt_exists
                     //TODO: fallback az angol-ra ha megbukik a check
 
-                    //TODO: genres
+                    //TODO: runtime & genres
                     $movie_data = array(
                         'locked' => $locked,//stuupid thang!
                         'synopsis' => $movie->get('overview'),
@@ -329,7 +329,90 @@ class Cron extends CI_Controller {
                         //'rating' => $movie->get('vote_average'),//tmdb saját rating értéke
                         // vote_count (int) // -||-
                         'yt_trailer_code' => $movie->getTrailer(),
+                        //runtime
                         //get('genre_ids') [3, 22, 14]
+                        /*
+{
+  "genres": [
+    {
+      "id": 28,
+      "name": "Akció"
+    },
+    {
+      "id": 12,
+      "name": "Kaland"
+    },
+    {
+      "id": 16,
+      "name": "Animációs"
+    },
+    {
+      "id": 35,
+      "name": "Vígjáték"
+    },
+    {
+      "id": 80,
+      "name": "Bűnügyi"
+    },
+    {
+      "id": 99,
+      "name": "Dokumentum"
+    },
+    {
+      "id": 18,
+      "name": "Dráma"
+    },
+    {
+      "id": 10751,
+      "name": "Családi"
+    },
+    {
+      "id": 14,
+      "name": "Fantasy"
+    },
+    {
+      "id": 36,
+      "name": "Történelmi"
+    },
+    {
+      "id": 27,
+      "name": "Horror"
+    },
+    {
+      "id": 10402,
+      "name": "Zenei"
+    },
+    {
+      "id": 9648,
+      "name": "Rejtély"
+    },
+    {
+      "id": 10749,
+      "name": "Romantikus"
+    },
+    {
+      "id": 878,
+      "name": "Sci-Fi"
+    },
+    {
+      "id": 10770,
+      "name": "TV film"
+    },
+    {
+      "id": 53,
+      "name": "Thriller"
+    },
+    {
+      "id": 10752,
+      "name": "Háborús"
+    },
+    {
+      "id": 37,
+      "name": "Western"
+    }
+  ]
+}
+                        */
                         'updated' => '2000-'.date('m-d H:i:s')
                     );
 
