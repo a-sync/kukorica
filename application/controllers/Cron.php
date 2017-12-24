@@ -105,7 +105,7 @@ class Cron extends CI_Controller {
                 $imdb_resp = scrape_url($u);
 
                 if($m['rating'] != 0) $imdb_rating = $m['rating'];
-                else $imdb_rating = 0.01;
+                else $imdb_rating = 0;
                 //FIXME: adatbázisban imdb_updated mező jelölje
                 //       a rating=0 helyett az imdb update státuszt
 
